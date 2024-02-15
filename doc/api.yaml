@@ -145,8 +145,9 @@ paths:
         "200":
           description: List obtained successfully.
 
-  /ban_user/{user_to_ban}:
+  /user/{u_name}/ban_user/{user_to_ban}:
     parameters:
+    - { $ref: "#/components/parameters/u_name" }
     - { $ref: "#/components/parameters/user_to_ban" }
 
     put:
@@ -206,10 +207,11 @@ paths:
 
 
 
-  /photo/{photo_id}/comment/{comment_id}:
+  /user/{u_name}/photo/{photo_id}/comment:
     parameters:
+    - {  $ref: "#/components/parameters/u_name" }
     - { $ref: "#/components/parameters/photo_id" }
-    - { $ref: "#/components/parameters/comment_id" }
+    
 
     post: 
       security:
@@ -229,6 +231,13 @@ paths:
         "200":
           description:  Comment added successfully.
 
+
+  /user/{u_name}/photo/{photo_id}/comments/{comment_id}:
+    parameters:
+    - {  $ref: "#/components/parameters/u_name" }
+    - { $ref: "#/components/parameters/photo_id" }
+    - { $ref: "#/components/parameters/comment_id" }
+
     delete:
       security:
         - bearerAuth: []
@@ -243,11 +252,11 @@ paths:
 
 
 
-  /view_comment/{comment_id}:
+  /user/{u_name}/photo/{photo_id}/comments:
     parameters:
-    - { $ref: "#/components/parameters/comment_id" }
-
-
+      - {  $ref: "#/components/parameters/u_name" }
+      - { $ref: "#/components/parameters/photo_id" }
+    
     get:
       security:
         - bearerAuth: []

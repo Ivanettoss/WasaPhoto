@@ -55,9 +55,15 @@ func New(db *sql.DB) (AppDatabase, error) {
 		return nil, errors.New("database is required when building a AppDatabase")
 	}
 
+	var err error
+	_, err = db.Exec("PRAGMA foreign_key=ON")
+	if err != nil {
+		return nil, err
+	}
+
 	// Check if table exists. If not, the database is empty, and we need to create the structure
 	var tableName string
-	err := db.QueryRow(`SELECT name FROM sqlite_master WHERE type='table' AND name='example_table';`).Scan(&tableName)
+	err = db.QueryRow(`SELECT name FROM sqlite_master WHERE type='table' AND name='example_table';`).Scan(&tableName)
 	if errors.Is(err, sql.ErrNoRows) {
 		sqlStmt := `CREATE TABLE example_table (id INTEGER NOT NULL PRIMARY KEY, name TEXT);`
 		_, err = db.Exec(sqlStmt)
@@ -65,6 +71,92 @@ func New(db *sql.DB) (AppDatabase, error) {
 			return nil, fmt.Errorf("error creating database structure: %w", err)
 		}
 	}
+
+
+	User:=`
+		CREATE TABLE IF NOT EXSISTS User (
+			IdUser INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
+			Username TEXT NOT NULL UNIQUE 
+		);
+		`
+
+	Photo:=` 
+			CREATE TABLE IF NOT EXISTS Photo (
+				IdPhoto INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
+				Path TEXT NOT NULL 
+			)
+			`
+
+	Like:=` 
+		CREATE TABLE  IF NOT EXSISTS Like (
+			IdUser INTEGER NOT NULL 
+			IdPhoto INTEGER NOT NULL  
+			PRIMARY KEY (IdPhoto, IdUser)
+			FOREINN KEY	 (IdPhoto) REFERENCES Photo
+			FOREIGN KEY  (IdUser) REFERENCES  User 
+		
+	)
+	`
+	Follow:=` 
+		CREATE TABLE  IF NOT EXSISTS Follow(
+			IdUser INTEGER NOT NULL 
+			IdUserFollowed INTEGER NOT NULL  
+			PRIMARY KEY (IdPhoto, IdUserFollowed)
+			FOREINN KEY	 (IdUser) REFERENCES User
+			FOREIGN KEY  (IdUserFollowed) REFERENCES  User 
+		
+	)
+	`
+	Comment:=` 
+		CREATE TABLE  IF NOT EXSISTS Comment(
+			IdComment INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
+			IdUser INTEGER NOT NULL 
+			IdPhoto INTEGER NOT NULL  
+			DataTime TEXT NOT NULL 
+			FOREINN KEY	 (IdUser) REFERENCES User
+			FOREIGN KEY  (IdPhoto) REFERENCES  User 
+		
+	)
+	`
+
+	Ban:=` 
+		CREATE TABLE  IF NOT EXSISTS Bant(
+			
+			IdUser INTEGER NOT NULL 
+			IdUserBanned INTEGER NOT NULL  
+			PRIMARY KEY (IdUser, IdUserBanned)
+			FOREINN KEY	 (IdUser) REFERENCES User
+			FOREIGN KEY  (IdUserBanned) REFERENCES  User 
+		
+	)
+	`
+
+	Upload:=` 
+		CREATE TABLE  IF NOT EXSISTS Upload(
+			IdUser INTEGER NOT NULL 
+			IdPhoto INTEGER NOT NULL  
+			DataTime TEXT NOT NULL 
+			FOREINN KEY	 (IdUser) REFERENCES User
+			FOREIGN KEY  (IdPhoto) REFERENCES  User 
+		
+	)
+	`
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	return &appdbimpl{
 		c: db,
