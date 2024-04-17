@@ -142,17 +142,42 @@ func New(db *sql.DB) (AppDatabase, error) {
 	)
 	`
 
+	_, err=db.Exec(User)
+
+	  if err!=nil{
+	  		return nil, fmt.Errorf("Error in User table creation: %w", err)
+	  }
 
 
+	_, err=db.Exec(Photo)
+		if err != nil {
+			return nil, fmt.Errorf("Error in  Photo table creation: %w", err)
+		}
 
+	_, err=db.Exec(Like)
+		if err != nil {
+			return nil, fmt.Errorf("Error in Like table creation: %w", err)
+		}
 
+	_, err=db.Exec(Follow)
+		if err != nil {
+			return nil, fmt.Errorf("Error in Follow table creation: %w", err)
+		}
 
+	_, err=db.Exec(Comment)
+		if err != nil {
+			return nil, fmt.Errorf("Error in Comment table creation: %w", err)
+		}
 
+	_, err=db.Exec(Ban)
+		if err != nil {
+			return nil, fmt.Errorf("Error in Ban table creation: %w", err)
+		}
 
-
-
-
-
+	_, err=db.Exec(Upload)
+		if err != nil {
+			return nil, fmt.Errorf("Error in Upload table creation: %w", err)
+		}
 
 
 
