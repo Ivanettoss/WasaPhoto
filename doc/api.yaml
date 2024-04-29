@@ -69,7 +69,7 @@ paths:
           description: User log-in action successful
           content: 
               application/json: 
-                schema: { $ref: "#/components/schemas/Username" }
+                schema: { $ref: "#/components/schemas/User" }
                 
 
 
@@ -369,7 +369,17 @@ components:
 
 
   schemas:
-  
+        User:
+          title: user
+          description: User username and id 
+          type: object
+          properties:
+              user: {  $ref: "#/components/schemas/Username" }
+              userId: 
+                description: user identificator 
+                type: integer
+                example: 89
+
         Username:
           title: username
           description: User username
