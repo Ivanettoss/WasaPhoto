@@ -4,6 +4,11 @@ type Username struct {
 	Username string `json:"username"`
 }
 
+type User struct {
+	Id int `json:"Id"`
+	Username string `json:"username"`
+}
+
 type Profile struct {
 	Username    string `json:"username"`
 	NPhoto      int    `json:"nphoto"`

@@ -69,7 +69,7 @@ paths:
           description: User log-in action successful
           content: 
               application/json: 
-                schema: { $ref: "#/components/schemas/User" }
+                schema: { $ref: "#/components/parameters/user_id" }
                 
 
 
@@ -568,7 +568,12 @@ components:
       required: true
       schema: { $ref: "#/components/schemas/Comment"  }
 
-
+     user_id:
+            name: user_id
+            in: path
+            description: The parameter that represents the user id  
+            required: true
+            schema: { $ref: "#/components/schemas/User"  }
 
     
 

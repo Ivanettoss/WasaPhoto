@@ -34,14 +34,14 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+
+	"git.sapienzaapps.it/fantasticcoffee/fantastic-coffee-decaffeinated/service/api/components"
 )
 
 // AppDatabase is the high level interface for the DB
 type AppDatabase interface {
-	GetName() (string, error)
-	SetName(name string) error
-	login(name string) error
-
+	InsertUser(name string) (int, error)
+	GetUser(id int) (components.User, error)
 	Ping() error
 }
 
@@ -73,22 +73,21 @@ func New(db *sql.DB) (AppDatabase, error) {
 		}
 	}
 
-
-	User:=`
+	User := `
 		CREATE TABLE IF NOT EXSISTS User (
 			IdUser INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
 			Username TEXT NOT NULL UNIQUE 
 		);
 		`
 
-	Photo:=` 
+	Photo := ` 
 			CREATE TABLE IF NOT EXISTS Photo (
 				IdPhoto INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
 				Path TEXT NOT NULL 
 			)
 			`
 
-	Like:=` 
+	Like := ` 
 		CREATE TABLE  IF NOT EXSISTS Like (
 			IdUser INTEGER NOT NULL 
 			IdPhoto INTEGER NOT NULL  
@@ -98,17 +97,17 @@ func New(db *sql.DB) (AppDatabase, error) {
 		
 	)
 	`
-	Follow:=` 
+	Follow := ` 
 		CREATE TABLE  IF NOT EXSISTS Follow(
 			IdUser INTEGER NOT NULL 
 			IdUserFollowed INTEGER NOT NULL  
-			PRIMARY KEY (IdPhoto, IdUserFollowed)
+			PRIMARY KEY (IdUser, IdUserFollowed)
 			FOREINN KEY	 (IdUser) REFERENCES User
 			FOREIGN KEY  (IdUserFollowed) REFERENCES  User 
 		
 	)
 	`
-	Comment:=` 
+	Comment := ` 
 		CREATE TABLE  IF NOT EXSISTS Comment(
 			IdComment INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
 			IdUser INTEGER NOT NULL 
@@ -120,7 +119,7 @@ func New(db *sql.DB) (AppDatabase, error) {
 	)
 	`
 
-	Ban:=` 
+	Ban := ` 
 		CREATE TABLE  IF NOT EXSISTS Bant(
 			
 			IdUser INTEGER NOT NULL 
@@ -132,7 +131,7 @@ func New(db *sql.DB) (AppDatabase, error) {
 	)
 	`
 
-	Upload:=` 
+	Upload := ` 
 		CREATE TABLE  IF NOT EXSISTS Upload(
 			IdUser INTEGER NOT NULL 
 			IdPhoto INTEGER NOT NULL  
@@ -143,50 +142,46 @@ func New(db *sql.DB) (AppDatabase, error) {
 	)
 	`
 
-	_, err=db.Exec(User)
+	_, err = db.Exec(User)
 
-	  if err!=nil{
-	  		return nil, fmt.Errorf("Error in User table creation: %w", err)
-	  }
+	if err != nil {
+		return nil, fmt.Errorf("Error in User table creation: %w", err)
+	}
 
+	_, err = db.Exec(Photo)
+	if err != nil {
+		return nil, fmt.Errorf("Error in  Photo table creation: %w", err)
+	}
 
-	_, err=db.Exec(Photo)
-		if err != nil {
-			return nil, fmt.Errorf("Error in  Photo table creation: %w", err)
-		}
+	_, err = db.Exec(Like)
+	if err != nil {
+		return nil, fmt.Errorf("Error in Like table creation: %w", err)
+	}
 
-	_, err=db.Exec(Like)
-		if err != nil {
-			return nil, fmt.Errorf("Error in Like table creation: %w", err)
-		}
+	_, err = db.Exec(Follow)
+	if err != nil {
+		return nil, fmt.Errorf("Error in Follow table creation: %w", err)
+	}
 
-	_, err=db.Exec(Follow)
-		if err != nil {
-			return nil, fmt.Errorf("Error in Follow table creation: %w", err)
-		}
+	_, err = db.Exec(Comment)
+	if err != nil {
+		return nil, fmt.Errorf("Error in Comment table creation: %w", err)
+	}
 
-	_, err=db.Exec(Comment)
-		if err != nil {
-			return nil, fmt.Errorf("Error in Comment table creation: %w", err)
-		}
+	_, err = db.Exec(Ban)
+	if err != nil {
+		return nil, fmt.Errorf("Error in Ban table creation: %w", err)
+	}
 
-	_, err=db.Exec(Ban)
-		if err != nil {
-			return nil, fmt.Errorf("Error in Ban table creation: %w", err)
-		}
-
-	_, err=db.Exec(Upload)
-		if err != nil {
-			return nil, fmt.Errorf("Error in Upload table creation: %w", err)
-		}
-
-
-
-
+	_, err = db.Exec(Upload)
+	if err != nil {
+		return nil, fmt.Errorf("Error in Upload table creation: %w", err)
+	}
 
 	return &appdbimpl{
 		c: db,
 	}, nil
+
 }
 
 func (db *appdbimpl) Ping() error {
