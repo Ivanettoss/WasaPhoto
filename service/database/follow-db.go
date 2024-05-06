@@ -1,11 +1,60 @@
 package database
 
-func (db *appdbimpl) InsertFollow() (string, error) {
+func (db *appdbimpl) InsertFollow(idUserPerforming int, idUserToFollow string) error {
 
-	err := db.c.Exec(`
+	_, err := db.c.Exec(`
 	INSERT OR IGNORE INTO Follow(IdUser,IdUserFollowed) 
-	VALUES(?)`,
-	)
+	VALUES(?,?)`, idUserPerforming, idUserToFollow)
 
-	return name, err
+	return err
+}
+
+func (db *appdbimpl) DeleteFollow(idUserToUnFollow int) error {
+
+	_, err := db.c.Exec(`
+	DELETE FROM Follow
+	WHERE IdUserFollowed=?`, idUserToUnFollow)
+
+	return err
+}
+
+func (db *appdbimpl) getFollowersList(idUserPerforming int) ([]string, error) {
+	var FollowersList []string
+
+	FollowerRows, err := db.c.Query(`
+	SELECT Username
+	FROM Follow, User
+	WHERE Follow.IdUser=User.IdUser and  Follow.IdUserFollowed=? `, idUserPerforming)
+
+	defer FollowerRows.Close()
+
+	for FollowerRows.Next() {
+		var name string
+		FollowerRows.Scan(&name)
+		FollowersList = append(FollowersList, name)
+	}
+
+	// format the list
+	return FollowersList, err
+
+}
+
+func (db *appdbimpl) getFollowedList(idUserPerforming int) ([]string, error) {
+	var FollowersList []string
+
+	FollowerRows, err := db.c.Query(`
+	SELECT Username
+	FROM Follow, User
+	WHERE Follow.IdUserFollowed=User.IdUser and  Follow.IdUser=? `, idUserPerforming)
+
+	defer FollowerRows.Close()
+
+	for FollowerRows.Next() {
+		var name string
+		FollowerRows.Scan(&name)
+		FollowersList = append(FollowersList, name)
+	}
+
+	// format the list
+	return FollowersList, err
 }

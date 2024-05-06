@@ -28,6 +28,7 @@ This is an example on how to migrate the DB and connect to it:
 
 Then you can initialize the AppDatabase and pass it to the api package.
 */
+
 package database
 
 import (
@@ -42,6 +43,9 @@ import (
 type AppDatabase interface {
 	InsertUser(name string) (int, error)
 	GetUser(id int) (components.User, error)
+	GetId(user string) (int, error)
+	InsertFollow(idUserPerforming int, idUserToFollow int)
+	InsertBan(idUserPerforming int, idUserToBan int)
 	Ping() error
 }
 

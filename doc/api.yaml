@@ -144,6 +144,9 @@ paths:
       responses:
         "200":
           description: List obtained successfully.
+          content:
+            application/json:  
+              schema: { $ref: "#/components/schemas/Ulist" }
 
   /user/{u_name}/ban_user/{user_to_ban}:
     parameters:
