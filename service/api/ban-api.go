@@ -1,6 +1,7 @@
 package database
 
 import (
+	"encoding/json"
 	"net/http"
 
 	"git.sapienzaapps.it/fantasticcoffee/fantastic-coffee-decaffeinated/service/api/components"
@@ -8,7 +9,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-func (rt *_router) BanUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
+func (rt *_router) banUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 
 	//authenticate the user
 	user, err := UserAuthentication("u_name", w, r, ps)
@@ -34,7 +35,7 @@ func (rt *_router) BanUser(w http.ResponseWriter, r *http.Request, ps httprouter
 
 }
 
-func (rt *_router) UnBanUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
+func (rt *_router) unBanUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 
 	//authenticate the user
 	user, err := UserAuthentication("u_name", w, r, ps)
@@ -57,5 +58,28 @@ func (rt *_router) UnBanUser(w http.ResponseWriter, r *http.Request, ps httprout
 
 	//insert it in db in ban table
 	err := rt.db.DeleteBan(uToBan)
+
+}
+
+func (rt *_router) BanList(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
+	//authenticate the user
+	user, err := UserAuthentication("u_name", w, r, ps)
+	if err != nil {
+		rt.baseLogger.WithError(err).Warning("Error reading Json")
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	banList, err := rt.dd.getBannedList(user)
+	if err != nil {
+		rt.baseLogger.WithError(err).Warning("to do")
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	w.WriteHeader(http.StatusCreated) // 201
+
+	// return the new object l
+	_ = json.NewEncoder(w).Encode(banList)
 
 }

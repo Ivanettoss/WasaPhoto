@@ -18,13 +18,13 @@ func (db *appdbimpl) DeleteFollow(idUserToUnFollow int) error {
 	return err
 }
 
-func (db *appdbimpl) getFollowersList(idUserPerforming int) ([]string, error) {
+func (db *appdbimpl) getFollowersList(idUser int) ([]string, error) {
 	var FollowersList []string
 
 	FollowerRows, err := db.c.Query(`
 	SELECT Username
 	FROM Follow, User
-	WHERE Follow.IdUser=User.IdUser and  Follow.IdUserFollowed=? `, idUserPerforming)
+	WHERE Follow.IdUser=User.IdUser and  Follow.IdUserFollowed=? `, idUser)
 
 	defer FollowerRows.Close()
 
@@ -39,13 +39,13 @@ func (db *appdbimpl) getFollowersList(idUserPerforming int) ([]string, error) {
 
 }
 
-func (db *appdbimpl) getFollowedList(idUserPerforming int) ([]string, error) {
+func (db *appdbimpl) getFollowedList(idUser int) ([]string, error) {
 	var FollowersList []string
 
 	FollowerRows, err := db.c.Query(`
 	SELECT Username
 	FROM Follow, User
-	WHERE Follow.IdUserFollowed=User.IdUser and  Follow.IdUser=? `, idUserPerforming)
+	WHERE Follow.IdUserFollowed=User.IdUser and  Follow.IdUser=? `, idUser)
 
 	defer FollowerRows.Close()
 

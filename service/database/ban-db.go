@@ -17,3 +17,24 @@ func (db *appdbimpl) DeleteBan(idUserToUnBan int) error {
 
 	return err
 }
+
+func (db *appdbimpl) getBannedList(idUserPerforming int) ([]string, error) {
+	var BannedList []string
+
+	BannedRows, err := db.c.Query(`
+	SELECT Username
+	FROM Ban, User
+	WHERE Ban.IdUserBanned=User.IdUser and  Ban.IdUser=? `, idUserPerforming)
+
+	defer BannedRows.Close()
+
+	for BannedRows.Next() {
+		var name string
+		BannedRows.Scan(&name)
+		BannedList = append(BannedList, name)
+	}
+
+	// format the list
+	return BannedList, err
+
+}

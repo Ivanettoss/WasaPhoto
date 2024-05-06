@@ -178,6 +178,27 @@ paths:
           description: User unbunned successfully.
 
 
+  /user/{u_name}/ban_list:
+    parameters:
+    - { $ref: "#/components/parameters/u_name" }
+
+    get:
+      security:
+        - bearerAuth: []
+      tags: ["Ban"]
+      summary: Get the banned users list 
+      description: 
+        Get  the banned list 
+      operationId: getFollowersList
+      responses:
+        "200":
+          description: List obtained successfully.
+          content:
+            application/json:  
+              schema: { $ref: "#/components/schemas/Ulist" }
+
+
+
   /user/{u_name}/photo/{photo_id}/like/{like_name}:
     parameters:
     - { $ref: "#/components/parameters/u_name" }

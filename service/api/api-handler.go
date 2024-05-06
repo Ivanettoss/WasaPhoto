@@ -12,7 +12,7 @@ func (rt *_router) Handler() http.Handler {
 
 	//follow and unfollow user
 	rt.router.PUT("/user/:u_name/followed/:name_to_follow", rt.wrap(rt.followUser))
-	rt.router.DELETE("/user/:u_name/followed/:name_to_follow", rt.wrap(rt.deleteUser))
+	rt.router.DELETE("/user/:u_name/followed/:name_to_follow", rt.wrap(rt.unfollowUser))
 
 	//followed and followers list
 	rt.router.GET("/user/:u_name/followed_list", rt.wrap(rt.getFollowedList))
@@ -20,8 +20,8 @@ func (rt *_router) Handler() http.Handler {
 
 	//ban and unban
 	rt.router.PUT("/user/:u_name/ban_user/:user_to_ban", rt.wrap(rt.banUser))
-	rt.router.DELETE("/user/:u_name/ban_user/:user_to_ban", rt.wrap(rt.unbanUser))
-
+	rt.router.DELETE("/user/:u_name/ban_user/:user_to_ban", rt.wrap(rt.unBanUser))
+	.router.GET("/user/:u_name/banned_list", rt.wrap(rt.BanList))
 	//like and unlike
 	rt.router.PUT("/user/:u_name/photo/:photo_id/like/:like_name", rt.wrap(rt.likePhoto))
 	rt.router.DELETE("/user/:u_name/photo/:photo_id/like/:like_name", rt.wrap(rt.unlikePhoto))

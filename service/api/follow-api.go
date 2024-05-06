@@ -1,6 +1,7 @@
 package database
 
 import (
+	"encoding/json"
 	"net/http"
 
 	"git.sapienzaapps.it/fantasticcoffee/fantastic-coffee-decaffeinated/service/api/components"
@@ -8,7 +9,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-func (rt *_router) FollowUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
+func (rt *_router) followUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 
 	//authenticate the user
 	user, err := UserAuthentication("u_name", w, r, ps)
@@ -34,7 +35,7 @@ func (rt *_router) FollowUser(w http.ResponseWriter, r *http.Request, ps httprou
 
 }
 
-func (rt *_router) UnFollowUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
+func (rt *_router) unFollowUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 
 	//authenticate the user
 	user, err := UserAuthentication("u_name", w, r, ps)
@@ -60,44 +61,49 @@ func (rt *_router) UnFollowUser(w http.ResponseWriter, r *http.Request, ps httpr
 
 }
 
-func (rt *_router) FollowersList(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
+func (rt *_router) getFollowersList(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
+	user := ps.ByName("u_name")
 
-	//authenticate the user
-	user, err := UserAuthentication("u_name", w, r, ps)
+	userId, err := rt.dd.GetId(user)
 	if err != nil {
-		rt.baseLogger.WithError(err).Warning("Error reading Json")
+		rt.baseLogger.WithError(err).Warning("to do ")
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	followersList, err := rt.dd.getFollowersList(user)
+	if err != nil {
+		rt.baseLogger.WithError(err).Warning("to do")
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	if err != nil {
-		rt.baseLogger.WithError(err).Warning("Error reading Json")
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
+	w.WriteHeader(http.StatusCreated) // 201
 
-	err := rt.dd.getFollowersList(user)
-	// da finire
+	// return the new object l
+	_ = json.NewEncoder(w).Encode(followersList)
 
 }
 
-func (rt *_router) FollowedList(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
+func (rt *_router) getFollowedList(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
+	user := ps.ByName("u_name")
 
-	//authenticate the user
-	user, err := UserAuthentication("u_name", w, r, ps)
+	userId, err := rt.dd.GetId(user)
 	if err != nil {
-		rt.baseLogger.WithError(err).Warning("Error reading Json")
+		rt.baseLogger.WithError(err).Warning("to do ")
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
+	followedList, err := rt.dd.getFollowedList(userId)
 	if err != nil {
-		rt.baseLogger.WithError(err).Warning("Error reading Json")
+		rt.baseLogger.WithError(err).Warning("to do ")
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	err := rt.dd.getFollowedList(user)
+	w.WriteHeader(http.StatusCreated) // 201
 
-	/// da finire
+	// return the new object l
+	_ = json.NewEncoder(w).Encode(followedList)
+
 }
