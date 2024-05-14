@@ -44,13 +44,13 @@ type AppDatabase interface {
 	InsertUser(name string) (int, error)
 	GetUser(id int) (components.User, error)
 	GetId(user string) (int, error)
-	InsertFollow(idUserPerforming int, idUserToFollow int)
-	DeleteFollow(idUserToUnFollow int) error
-	InsertBan(idUserPerforming int, idUserToBan int)
-	DeleteBan(idUserToUnBan int) error
-	getFollowedList(idUser int) ([]string, error)
-	getFollowersList(idUser int) ([]string, error)
-	getBannedList(idUserPerforming int) ([]string, error)
+	InsertFollow(idUserPerforming int, idUserToFollow int) error
+	DeleteFollow(idUserPerforming int, idUserToUnFollow int) error
+	InsertBan(idUserPerforming int, idUserToBan int) error
+	DeleteBan(idUserPerforming int, idUserToUnBan int) error
+	GetFollowedList(idUser int) ([]string, error)
+	GetFollowersList(idUser int) ([]string, error)
+	GetBannedList(idUserPerforming int) ([]string, error)
 	Ping() error
 }
 

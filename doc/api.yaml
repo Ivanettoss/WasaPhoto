@@ -597,11 +597,16 @@ components:
             in: path
             description: The parameter that represents the user id  
             required: true
-            schema: { $ref: "#/components/schemas/User"  }
-
-    
-
-          
-          
+            schema: { $ref: "#/components/schemas/User"  }       
+ 
+  responses:
+    BadRequest:
+      description: The request was not compliant with the documentation (eg. missing fields, etc).
+    Unauthorized:
+      description: Access token is missing or invalid.
+    NotFound:
+      description: The server cannot find the requested resource.
+    InternalServerError:
+      description: The server encounted an internal error. Further info in server logs.       
 
 

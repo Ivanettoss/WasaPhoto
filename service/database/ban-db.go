@@ -9,7 +9,7 @@ func (db *appdbimpl) InsertBan(idUserPerforming int, idUserToBan int) error {
 	return err
 }
 
-func (db *appdbimpl) DeleteBan(idUserToUnBan int) error {
+func (db *appdbimpl) DeleteBan(idUserPerforming int, idUserToUnBan int) error {
 
 	_, err := db.c.Exec(`
 	DELETE FROM Ban
@@ -18,7 +18,7 @@ func (db *appdbimpl) DeleteBan(idUserToUnBan int) error {
 	return err
 }
 
-func (db *appdbimpl) getBannedList(idUserPerforming int) ([]string, error) {
+func (db *appdbimpl) GetBannedList(idUserPerforming int) ([]string, error) {
 	var BannedList []string
 
 	BannedRows, err := db.c.Query(`

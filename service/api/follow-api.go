@@ -1,10 +1,9 @@
-package database
+package api
 
 import (
 	"encoding/json"
 	"net/http"
 
-	"git.sapienzaapps.it/fantasticcoffee/fantastic-coffee-decaffeinated/service/api/components"
 	"git.sapienzaapps.it/fantasticcoffee/fantastic-coffee-decaffeinated/service/api/reqcontext"
 	"github.com/julienschmidt/httprouter"
 )
@@ -12,7 +11,7 @@ import (
 func (rt *_router) followUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 
 	//authenticate the user
-	user, err := UserAuthentication("u_name", w, r, ps)
+	user, err := rt.UserAuthentication("u_name", w, r, ps)
 	if err != nil {
 		rt.baseLogger.WithError(err).Warning("Error reading Json")
 		w.WriteHeader(http.StatusBadRequest)
@@ -22,23 +21,29 @@ func (rt *_router) followUser(w http.ResponseWriter, r *http.Request, ps httprou
 	uToFollow := ps.ByName("name_to_follow")
 
 	//get the user to follow from the username
-	id, err := GetId(uToFollow)
+	id, err := rt.db.GetId(uToFollow)
 
 	if err != nil {
-		rt.baseLogger.WithError(err).Warning("Error reading Json")
+		rt.baseLogger.WithError(err).Warning("to do")
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	//insert it in db in follow table
-	err := rt.db.InsertFollow(components.Id, uToFollow)
+	err = rt.db.InsertFollow(user.Id, id)
+
+	if err != nil {
+		rt.baseLogger.WithError(err).Warning("to so")
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 
 }
 
 func (rt *_router) unFollowUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 
 	//authenticate the user
-	user, err := UserAuthentication("u_name", w, r, ps)
+	user, err := rt.UserAuthentication("u_name", w, r, ps)
 	if err != nil {
 		rt.baseLogger.WithError(err).Warning("Error reading Json")
 		w.WriteHeader(http.StatusBadRequest)
@@ -48,7 +53,7 @@ func (rt *_router) unFollowUser(w http.ResponseWriter, r *http.Request, ps httpr
 	uToFollow := ps.ByName("name_to_follow")
 
 	//get the user to follow from the username
-	id, err := GetId(uToFollow)
+	id, err := rt.db.GetId(uToFollow)
 
 	if err != nil {
 		rt.baseLogger.WithError(err).Warning("Error reading Json")
@@ -57,20 +62,20 @@ func (rt *_router) unFollowUser(w http.ResponseWriter, r *http.Request, ps httpr
 	}
 
 	//insert it in db in follow table
-	err := rt.dd.DeleteFollow(uToFollow)
+	err = rt.db.DeleteFollow(user.Id, id)
 
 }
 
 func (rt *_router) getFollowersList(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 	user := ps.ByName("u_name")
 
-	userId, err := rt.dd.GetId(user)
+	userId, err := rt.db.GetId(user)
 	if err != nil {
 		rt.baseLogger.WithError(err).Warning("to do ")
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	followersList, err := rt.dd.getFollowersList(user)
+	followersList, err := rt.db.GetFollowersList(userId)
 	if err != nil {
 		rt.baseLogger.WithError(err).Warning("to do")
 		w.WriteHeader(http.StatusBadRequest)
@@ -87,14 +92,14 @@ func (rt *_router) getFollowersList(w http.ResponseWriter, r *http.Request, ps h
 func (rt *_router) getFollowedList(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 	user := ps.ByName("u_name")
 
-	userId, err := rt.dd.GetId(user)
+	userId, err := rt.db.GetId(user)
 	if err != nil {
 		rt.baseLogger.WithError(err).Warning("to do ")
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	followedList, err := rt.dd.getFollowedList(userId)
+	followedList, err := rt.db.GetFollowedList(userId)
 	if err != nil {
 		rt.baseLogger.WithError(err).Warning("to do ")
 		w.WriteHeader(http.StatusBadRequest)
