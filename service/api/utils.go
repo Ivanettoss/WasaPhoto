@@ -35,8 +35,7 @@ func (rt *_router) UserAuthentication(username string, w http.ResponseWriter, r 
 	idFromDB, err := rt.db.GetId(uname)
 
 	if err != nil {
-		rt.baseLogger.WithError(err).Warning("// da fare  ")
-		w.WriteHeader(http.StatusBadRequest)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return user, err
 	}
 
@@ -46,8 +45,7 @@ func (rt *_router) UserAuthentication(username string, w http.ResponseWriter, r 
 	token, err := GetBearerToken(authString)
 
 	if err != nil {
-		rt.baseLogger.WithError(err).Warning("// da fare  ")
-		w.WriteHeader(http.StatusBadRequest)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return user, err
 	}
 

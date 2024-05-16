@@ -70,7 +70,7 @@ paths:
           content: 
               application/json: 
                 schema: { $ref: "#/components/parameters/user_id" }
-                
+        "500": { $ref: "#/components/responses/InternalServerError" }        
 
 
   /user/{u_name}/followed/{name_to_follow}:
@@ -93,6 +93,9 @@ paths:
           content:
             application/json:
               schema: { $ref: "#/components/schemas/Username" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
 
     delete:
       security:
@@ -105,6 +108,10 @@ paths:
       responses:
         "204":
           description: User unfollowed successfully.
+
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
+
 
           
 
@@ -126,6 +133,10 @@ paths:
           content:
             application/json:  
               schema: { $ref: "#/components/schemas/Ulist" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
+
 
 
 
@@ -147,6 +158,11 @@ paths:
           content:
             application/json:  
               schema: { $ref: "#/components/schemas/Ulist" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
+      
+
 
   /user/{u_name}/ban_user/{user_to_ban}:
     parameters:
@@ -164,6 +180,10 @@ paths:
       responses:
         "200":
           description: User bunned successfully.
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
+
 
     delete:
       security:
@@ -176,6 +196,9 @@ paths:
       responses:
         "204":
           description: User unbunned successfully.
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
+
 
 
   /user/{u_name}/ban_list:

@@ -13,8 +13,7 @@ func (rt *_router) followUser(w http.ResponseWriter, r *http.Request, ps httprou
 	//authenticate the user
 	user, err := rt.UserAuthentication("u_name", w, r, ps)
 	if err != nil {
-		rt.baseLogger.WithError(err).Warning("Error reading Json")
-		w.WriteHeader(http.StatusBadRequest)
+		http.Error(w, err.Error(), http.StatusUnauthorized)
 		return
 	}
 
@@ -24,8 +23,7 @@ func (rt *_router) followUser(w http.ResponseWriter, r *http.Request, ps httprou
 	id, err := rt.db.GetId(uToFollow)
 
 	if err != nil {
-		rt.baseLogger.WithError(err).Warning("to do")
-		w.WriteHeader(http.StatusBadRequest)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
@@ -34,7 +32,7 @@ func (rt *_router) followUser(w http.ResponseWriter, r *http.Request, ps httprou
 
 	if err != nil {
 		rt.baseLogger.WithError(err).Warning("to so")
-		w.WriteHeader(http.StatusBadRequest)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
@@ -45,24 +43,27 @@ func (rt *_router) unFollowUser(w http.ResponseWriter, r *http.Request, ps httpr
 	//authenticate the user
 	user, err := rt.UserAuthentication("u_name", w, r, ps)
 	if err != nil {
-		rt.baseLogger.WithError(err).Warning("Error reading Json")
-		w.WriteHeader(http.StatusBadRequest)
+		http.Error(w, err.Error(), http.StatusUnauthorized)
 		return
 	}
 
 	uToFollow := ps.ByName("name_to_follow")
 
-	//get the user to follow from the username
+	//get the user's Id to follow from the username
 	id, err := rt.db.GetId(uToFollow)
 
 	if err != nil {
-		rt.baseLogger.WithError(err).Warning("Error reading Json")
-		w.WriteHeader(http.StatusBadRequest)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	//insert it in db in follow table
+	//REMOVE it from follow table
 	err = rt.db.DeleteFollow(user.Id, id)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
 }
 
@@ -71,17 +72,14 @@ func (rt *_router) getFollowersList(w http.ResponseWriter, r *http.Request, ps h
 
 	userId, err := rt.db.GetId(user)
 	if err != nil {
-		rt.baseLogger.WithError(err).Warning("to do ")
-		w.WriteHeader(http.StatusBadRequest)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 	followersList, err := rt.db.GetFollowersList(userId)
 	if err != nil {
-		rt.baseLogger.WithError(err).Warning("to do")
-		w.WriteHeader(http.StatusBadRequest)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
 	w.WriteHeader(http.StatusCreated) // 201
 
 	// return the new object l
@@ -93,16 +91,16 @@ func (rt *_router) getFollowedList(w http.ResponseWriter, r *http.Request, ps ht
 	user := ps.ByName("u_name")
 
 	userId, err := rt.db.GetId(user)
+
 	if err != nil {
-		rt.baseLogger.WithError(err).Warning("to do ")
-		w.WriteHeader(http.StatusBadRequest)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	followedList, err := rt.db.GetFollowedList(userId)
+
 	if err != nil {
-		rt.baseLogger.WithError(err).Warning("to do ")
-		w.WriteHeader(http.StatusBadRequest)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 

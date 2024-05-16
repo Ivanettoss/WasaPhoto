@@ -83,69 +83,69 @@ func New(db *sql.DB) (AppDatabase, error) {
 	}
 
 	User := `
-		CREATE TABLE IF NOT EXSISTS User (
-			IdUser INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
+		CREATE TABLE IF NOT EXISTS User (
+			IdUser INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 			Username TEXT NOT NULL UNIQUE 
 		);
 		`
 
 	Photo := ` 
 			CREATE TABLE IF NOT EXISTS Photo (
-				IdPhoto INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
+				IdPhoto INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 				Path TEXT NOT NULL 
 			)
 			`
 
 	Like := ` 
-		CREATE TABLE  IF NOT EXSISTS Like (
-			IdUser INTEGER NOT NULL 
-			IdPhoto INTEGER NOT NULL  
-			PRIMARY KEY (IdPhoto, IdUser)
-			FOREINN KEY	 (IdPhoto) REFERENCES Photo
+		CREATE TABLE  IF NOT EXISTS Like (
+			IdUser INTEGER NOT NULL, 
+			IdPhoto INTEGER NOT NULL,  
+			PRIMARY KEY (IdPhoto, IdUser),
+			FOREIGN KEY	 (IdPhoto) REFERENCES Photo,
 			FOREIGN KEY  (IdUser) REFERENCES  User 
 		
 	)
 	`
 	Follow := ` 
-		CREATE TABLE  IF NOT EXSISTS Follow(
-			IdUser INTEGER NOT NULL 
-			IdUserFollowed INTEGER NOT NULL  
-			PRIMARY KEY (IdUser, IdUserFollowed)
-			FOREINN KEY	 (IdUser) REFERENCES User
+		CREATE TABLE  IF NOT EXISTS Follow(
+			IdUser INTEGER NOT NULL ,
+			IdUserFollowed INTEGER NOT NULL,  
+			PRIMARY KEY (IdUser, IdUserFollowed),
+			FOREIGN KEY	 (IdUser) REFERENCES User,
 			FOREIGN KEY  (IdUserFollowed) REFERENCES  User 
 		
 	)
 	`
 	Comment := ` 
-		CREATE TABLE  IF NOT EXSISTS Comment(
-			IdComment INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
-			IdUser INTEGER NOT NULL 
-			IdPhoto INTEGER NOT NULL  
-			DataTime TEXT NOT NULL 
-			FOREINN KEY	 (IdUser) REFERENCES User
+		CREATE TABLE  IF NOT EXISTS Comment(
+			IdComment INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+			IdUser INTEGER NOT NULL,
+			IdPhoto INTEGER NOT NULL,  
+			DataTime TEXT NOT NULL ,
+			FOREIGN KEY	 (IdUser) REFERENCES User,
 			FOREIGN KEY  (IdPhoto) REFERENCES  User 
 		
 	)
 	`
 
 	Ban := ` 
-		CREATE TABLE  IF NOT EXSISTS Bant(
+		CREATE TABLE  IF NOT EXISTS Bant(
 			
-			IdUser INTEGER NOT NULL 
-			IdUserBanned INTEGER NOT NULL  
-			PRIMARY KEY (IdUser, IdUserBanned)
-			FOREINN KEY	 (IdUser) REFERENCES User
+			IdUser INTEGER NOT NULL, 
+			IdUserBanned INTEGER NOT NULL,  
+			PRIMARY KEY (IdUser, IdUserBanned),
+			FOREIGN KEY	 (IdUser) REFERENCES User,
 			FOREIGN KEY  (IdUserBanned) REFERENCES  User 
 		
 	)
 	`
 
 	Upload := ` 
-		CREATE TABLE  IF NOT EXSISTS Upload(
-			IdUser INTEGER NOT NULL 
-			IdPhoto INTEGER NOT NULL  
-			DataTime TEXT NOT NULL 
-			FOREINN KEY	 (IdUser) REFERENCES User
+		CREATE TABLE  IF NOT EXISTS Upload(
+			IdUser INTEGER NOT NULL, 
+			IdPhoto INTEGER NOT NULL,  
+			DataTime TEXT NOT NULL,
+			FOREIGN KEY	 (IdUser) REFERENCES User,
 			FOREIGN KEY  (IdPhoto) REFERENCES  User 
 		
 	)

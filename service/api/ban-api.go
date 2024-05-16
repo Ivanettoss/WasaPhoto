@@ -12,20 +12,19 @@ func (rt *_router) banUser(w http.ResponseWriter, r *http.Request, ps httprouter
 
 	//authenticate the user
 	user, err := rt.UserAuthentication("u_name", w, r, ps)
+
 	if err != nil {
-		rt.baseLogger.WithError(err).Warning("Error reading Json")
-		w.WriteHeader(http.StatusBadRequest)
+		http.Error(w, err.Error(), http.StatusUnauthorized)
 		return
 	}
 
 	uToBan := ps.ByName("user_to_ban")
 
-	//get the user to ban from the username
+	//get the user's Id to ban from the username
 	id, err := rt.db.GetId(uToBan)
 
 	if err != nil {
-		rt.baseLogger.WithError(err).Warning("Error reading Json")
-		w.WriteHeader(http.StatusBadRequest)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
@@ -33,8 +32,7 @@ func (rt *_router) banUser(w http.ResponseWriter, r *http.Request, ps httprouter
 	err = rt.db.InsertBan(user.Id, id)
 
 	if err != nil {
-		rt.baseLogger.WithError(err).Warning("Error reading Json")
-		w.WriteHeader(http.StatusBadRequest)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -45,8 +43,7 @@ func (rt *_router) unBanUser(w http.ResponseWriter, r *http.Request, ps httprout
 	//authenticate the user
 	user, err := rt.UserAuthentication("u_name", w, r, ps)
 	if err != nil {
-		rt.baseLogger.WithError(err).Warning("Error reading Json")
-		w.WriteHeader(http.StatusBadRequest)
+		http.Error(w, err.Error(), http.StatusUnauthorized)
 		return
 	}
 
@@ -56,13 +53,16 @@ func (rt *_router) unBanUser(w http.ResponseWriter, r *http.Request, ps httprout
 	id, err := rt.db.GetId(uToBan)
 
 	if err != nil {
-		rt.baseLogger.WithError(err).Warning("Error reading Json")
-		w.WriteHeader(http.StatusBadRequest)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	//insert it in db in ban table
 	err = rt.db.DeleteBan(user.Id, id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
 }
 
@@ -70,15 +70,13 @@ func (rt *_router) banList(w http.ResponseWriter, r *http.Request, ps httprouter
 	//authenticate the user
 	user, err := rt.UserAuthentication("u_name", w, r, ps)
 	if err != nil {
-		rt.baseLogger.WithError(err).Warning("Error reading Json")
-		w.WriteHeader(http.StatusBadRequest)
+		http.Error(w, err.Error(), http.StatusUnauthorized)
 		return
 	}
 
 	banList, err := rt.db.GetBannedList(user.Id)
 	if err != nil {
-		rt.baseLogger.WithError(err).Warning("to do")
-		w.WriteHeader(http.StatusBadRequest)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 

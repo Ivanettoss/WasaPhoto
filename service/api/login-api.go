@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"git.sapienzaapps.it/fantasticcoffee/fantastic-coffee-decaffeinated/service/api/components"
@@ -12,24 +13,25 @@ import (
 // camel case per le funzioni
 func (rt *_router) session(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 
-	var username string
+	var username components.Username
 	var id int
 
 	err := json.NewDecoder(r.Body).Decode(&username)
-	_ = r.Body.Close
+
+	fmt.Print(username)
 
 	if err != nil {
-		rt.baseLogger.WithError(err).Warning("Error reading Json")
-		w.WriteHeader(http.StatusBadRequest)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
+	fmt.Print(username)
 	// call the function nel db che crea l'utente e lo inserta nel db
 	// ho il suo id
-	id, err = rt.db.InsertUser(username)
+	id, err = rt.db.InsertUser(username.Username)
 
 	if err != nil {
-		rt.baseLogger.WithError(err).Warning("ERRORE INSERIMENTO NEL DB ")
-		w.WriteHeader(http.StatusBadRequest)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -38,9 +40,11 @@ func (rt *_router) session(w http.ResponseWriter, r *http.Request, ps httprouter
 	// voglio la struct del determinato utente
 	user, err = rt.db.GetUser(id)
 
+	fmt.Print("swag")
+	fmt.Print(user)
+
 	if err != nil {
-		rt.baseLogger.WithError(err).Warning("// da fare  ")
-		w.WriteHeader(http.StatusBadRequest)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 

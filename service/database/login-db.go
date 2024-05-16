@@ -1,30 +1,27 @@
 package database
 
-func (db *appdbimpl) InsertUser(username string) (error,int) {
-	var id int 
- 
-	// if not exist insert the user into the db 
+func (db *appdbimpl) InsertUser(username string) (int, error) {
+	var id int
+
+	// if not exist insert the user into the db
 	_, err := db.c.Exec(`
 		INSERT OR IGNORE INTO User(Username) 
 		VALUES(?)`, username)
 
 	if err != nil {
-		return err,0
+		return 0, err
 	}
 
-	// select the id from the last one inserted 
+	// select the id from the last one inserted
 	err = db.c.QueryRow(`
-		SELECT Id
+		SELECT IdUser
 		FROM User
-		WHERE User.username=?`,username).Scan(&id)
+		WHERE User.username=?`, username).Scan(&id)
 
 	if err != nil {
-			return err,0
+		return 0, err
 	}
 
-	// return the id from the last inserted 
-	return nil,id
+	// return the id from the last inserted
+	return id, nil
 }
-
-
-

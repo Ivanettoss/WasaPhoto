@@ -1,6 +1,6 @@
 package database
 
-func (db *appdbimpl) InsertFollow(idUserPerforming int, idUserToFollow string) error {
+func (db *appdbimpl) InsertFollow(idUserPerforming int, idUserToFollow int) error {
 
 	_, err := db.c.Exec(`
 	INSERT OR IGNORE INTO Follow(IdUser,IdUserFollowed) 
