@@ -2,7 +2,6 @@ package api
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"git.sapienzaapps.it/fantasticcoffee/fantastic-coffee-decaffeinated/service/api/components"
@@ -18,14 +17,11 @@ func (rt *_router) session(w http.ResponseWriter, r *http.Request, ps httprouter
 
 	err := json.NewDecoder(r.Body).Decode(&username)
 
-	fmt.Print(username)
-
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	fmt.Print(username)
 	// call the function nel db che crea l'utente e lo inserta nel db
 	// ho il suo id
 	id, err = rt.db.InsertUser(username.Username)
@@ -39,9 +35,6 @@ func (rt *_router) session(w http.ResponseWriter, r *http.Request, ps httprouter
 
 	// voglio la struct del determinato utente
 	user, err = rt.db.GetUser(id)
-
-	fmt.Print("swag")
-	fmt.Print(user)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)

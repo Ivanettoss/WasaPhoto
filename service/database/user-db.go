@@ -1,6 +1,10 @@
 package database
 
-import "git.sapienzaapps.it/fantasticcoffee/fantastic-coffee-decaffeinated/service/api/components"
+import (
+	"fmt"
+
+	"git.sapienzaapps.it/fantasticcoffee/fantastic-coffee-decaffeinated/service/api/components"
+)
 
 func (db *appdbimpl) GetUser(id int) (components.User, error) {
 	// the function return an User(id, username) given one id
@@ -8,12 +12,16 @@ func (db *appdbimpl) GetUser(id int) (components.User, error) {
 	var Id int
 	var Username string
 
+	fmt.Println("pre query")
 	// select the user with the given id
 	err := db.c.QueryRow(`
 		SELECT IdUser,Username
 		FROM User
-		WHERE User.IdUser=id`).Scan(&Id, &Username)
+		WHERE User.IdUser=?`, id).Scan(&Id, &Username)
 
+	fmt.Print(" qui dovrebbero esserci id e username")
+	fmt.Println(Id)
+	fmt.Println(Username)
 	//declare a user object
 	var user components.User
 
