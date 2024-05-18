@@ -129,7 +129,7 @@ func New(db *sql.DB) (AppDatabase, error) {
 	`
 
 	Ban := ` 
-		CREATE TABLE  IF NOT EXISTS Bant(
+		CREATE TABLE  IF NOT EXISTS Ban(
 			
 			IdUser INTEGER NOT NULL, 
 			IdUserBanned INTEGER NOT NULL,  

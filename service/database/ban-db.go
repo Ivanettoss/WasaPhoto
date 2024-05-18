@@ -3,7 +3,7 @@ package database
 func (db *appdbimpl) InsertBan(idUserPerforming int, idUserToBan int) error {
 
 	_, err := db.c.Exec(`
-	INSERT OR IGNORE INTO Follow(IdUser,IdUserBanned) 
+	INSERT OR IGNORE INTO Ban(IdUser,IdUserBanned) 
 	VALUES(?,?)`, idUserPerforming, idUserToBan)
 
 	return err

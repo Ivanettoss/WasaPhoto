@@ -7,8 +7,6 @@ func (db *appdbimpl) InsertFollow(idUserPerforming int, idUserToFollow int) erro
 	_, err := db.c.Exec(`
 	INSERT OR IGNORE INTO Follow(IdUser,IdUserFollowed) 
 	VALUES(?,?)`, idUserPerforming, idUserToFollow)
-	fmt.Println("query eseguita ")
-	fmt.Println(idUserPerforming, idUserToFollow)
 
 	return err
 }
@@ -18,14 +16,13 @@ func (db *appdbimpl) DeleteFollow(idUserPerforming int, idUserToUnFollow int) er
 	_, err := db.c.Exec(`
 	DELETE 
 	FROM Follow
-	WHERE IdUserFollowed=? and IdUserPerforming=?`, idUserToUnFollow, idUserPerforming)
-
+	WHERE IdUserFollowed=? and IdUser=?`, idUserToUnFollow, idUserPerforming)
 	return err
 }
 
 func (db *appdbimpl) GetFollowersList(idUser int) ([]string, error) {
 	var FollowersList []string
-
+	fmt.Print("lesgoski")
 	FollowerRows, err := db.c.Query(`
 	SELECT Username
 	FROM Follow, User

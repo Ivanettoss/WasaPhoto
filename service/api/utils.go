@@ -32,9 +32,9 @@ func (rt *_router) UserAuthentication(username string, w http.ResponseWriter, r 
 	// autenticazione
 	uname := ps.ByName(username) // return string (name in risorsa { que})
 
-
 	// query per ottenere id di utente user
 	idFromDB, err := rt.db.GetId(uname)
+	fmt.Println("id preso col get-", idFromDB)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -46,10 +46,9 @@ func (rt *_router) UserAuthentication(username string, w http.ResponseWriter, r 
 	// estraggo il token id dal barer
 	token, err := GetBearerToken(authString)
 
-	fmt.Println("token", token)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
-		
+
 		return user, err
 	}
 
