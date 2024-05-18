@@ -1,8 +1,6 @@
 package database
 
 import (
-	"fmt"
-
 	"git.sapienzaapps.it/fantasticcoffee/fantastic-coffee-decaffeinated/service/api/components"
 )
 
@@ -12,21 +10,17 @@ func (db *appdbimpl) GetUser(id int) (components.User, error) {
 	var Id int
 	var Username string
 
-	fmt.Println("pre query")
 	// select the user with the given id
 	err := db.c.QueryRow(`
 		SELECT IdUser,Username
 		FROM User
 		WHERE User.IdUser=?`, id).Scan(&Id, &Username)
 
-	fmt.Print(" qui dovrebbero esserci id e username")
-	fmt.Println(Id)
-	fmt.Println(Username)
 	//declare a user object
 	var user components.User
 
 	if err != nil {
-		return user, nil
+		return user, err
 	}
 
 	// if no error, assign the values retrieved
@@ -34,7 +28,7 @@ func (db *appdbimpl) GetUser(id int) (components.User, error) {
 	user.Username = Username
 
 	// return the object
-	return user, nil
+	return user, err
 
 }
 
@@ -46,7 +40,7 @@ func (db *appdbimpl) GetId(user string) (int, error) {
 	err := db.c.QueryRow(`
 		SELECT IdUser
 		FROM User
-		WHERE user=User.Username`).Scan(&Id)
+		WHERE User.Username=?`, user).Scan(&Id)
 
 	if err != nil {
 		return Id, err // to do inserire stampa di errore

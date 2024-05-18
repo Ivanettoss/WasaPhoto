@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+
 	"net/http"
 
 	"git.sapienzaapps.it/fantasticcoffee/fantastic-coffee-decaffeinated/service/api/reqcontext"
@@ -11,7 +12,9 @@ import (
 func (rt *_router) followUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 
 	//authenticate the user
+
 	user, err := rt.UserAuthentication("u_name", w, r, ps)
+
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusUnauthorized)
 		return
@@ -31,7 +34,7 @@ func (rt *_router) followUser(w http.ResponseWriter, r *http.Request, ps httprou
 	err = rt.db.InsertFollow(user.Id, id)
 
 	if err != nil {
-		rt.baseLogger.WithError(err).Warning("to so")
+		rt.baseLogger.WithError(err).Warning("to do")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}

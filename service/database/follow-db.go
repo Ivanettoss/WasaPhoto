@@ -1,10 +1,14 @@
 package database
 
+import "fmt"
+
 func (db *appdbimpl) InsertFollow(idUserPerforming int, idUserToFollow int) error {
 
 	_, err := db.c.Exec(`
 	INSERT OR IGNORE INTO Follow(IdUser,IdUserFollowed) 
 	VALUES(?,?)`, idUserPerforming, idUserToFollow)
+	fmt.Println("query eseguita ")
+	fmt.Println(idUserPerforming, idUserToFollow)
 
 	return err
 }
