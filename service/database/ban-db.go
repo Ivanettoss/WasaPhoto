@@ -13,7 +13,7 @@ func (db *appdbimpl) DeleteBan(idUserPerforming int, idUserToUnBan int) error {
 
 	_, err := db.c.Exec(`
 	DELETE FROM Ban
-	WHERE IdUserBanned=?`, idUserToUnBan)
+	WHERE IdUserBanned=? and IdUser=?`, idUserToUnBan, idUserPerforming)
 
 	return err
 }

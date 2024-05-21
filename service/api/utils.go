@@ -1,7 +1,6 @@
 package api
 
 import (
-	"fmt"
 	"net/http"
 	"regexp"
 	"strconv"
@@ -34,7 +33,6 @@ func (rt *_router) UserAuthentication(username string, w http.ResponseWriter, r 
 
 	// query per ottenere id di utente user
 	idFromDB, err := rt.db.GetId(uname)
-	fmt.Println("id preso col get-", idFromDB)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -56,7 +54,7 @@ func (rt *_router) UserAuthentication(username string, w http.ResponseWriter, r 
 		//coincidono, posso autenticare e returnare l'utente
 
 		user.Id = idFromDB
-		user.Username = username
+		user.Username = uname
 
 		return user, nil
 

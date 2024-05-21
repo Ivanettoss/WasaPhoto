@@ -179,7 +179,7 @@ paths:
       operationId: banUser 
       responses:
         "200":
-          description: User bunned successfully.
+          description: User banned successfully.
         "400": { $ref: "#/components/responses/BadRequest" }
         "401": { $ref: "#/components/responses/Unauthorized" }
         "500": { $ref: "#/components/responses/InternalServerError" }
@@ -336,7 +336,7 @@ paths:
           required: true
           content:
             application/json:
-              schema: { $ref: "#/components/schemas/Photo" }
+              schema: { $ref: "#/components/schemas/PhotoToUpload" }
         responses:
           "201":
             description:  Photo upleaded successfully.
@@ -471,6 +471,19 @@ components:
                     maxLength: 30
                     example: "2002-04-10T00:28:28Z"
 
+        PhotoToUpload:
+                title: photo to upload
+                description: posted photo
+                type: object
+                properties:
+                  photo_bytes:
+                    description: bytes of the photo
+                    type: string
+                    minLength: 0
+                    maxLength: 9999
+                    example: data:image/jpg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/AAAAAAAAAAAAAQIDAAQF/
+                    pattern: ".*"
+
 
         Comment:
               title: comment
@@ -590,8 +603,6 @@ components:
       required: true
       schema: { $ref: "#/components/schemas/Username" }
 
-
-
     like_name:
       name: like_name
       in: path
@@ -615,7 +626,7 @@ components:
       required: true
       schema: { $ref: "#/components/schemas/Comment"  }
 
-     user_id:
+    user_id:
             name: user_id
             in: path
             description: The parameter that represents the user id  

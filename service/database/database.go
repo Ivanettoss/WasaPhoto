@@ -51,6 +51,10 @@ type AppDatabase interface {
 	GetFollowedList(idUser int) ([]string, error)
 	GetFollowersList(idUser int) ([]string, error)
 	GetBannedList(idUserPerforming int) ([]string, error)
+
+	InsertPhoto(IdUser int, photo components.Photo) error
+	DeletePhoto(photoId int) error
+	GetPhoto(photoId int) (components.Photo, error)
 	Ping() error
 }
 
@@ -92,7 +96,10 @@ func New(db *sql.DB) (AppDatabase, error) {
 	Photo := ` 
 			CREATE TABLE IF NOT EXISTS Photo (
 				IdPhoto INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-				Path TEXT NOT NULL 
+				IdUser INTEGER NOT NULL,  
+			    DateTime TEXT NOT NULL,
+				Path TEXT NOT NULL,
+				FOREIGN KEY (IdUser) REFERENCES User(Username)
 			)
 			`
 

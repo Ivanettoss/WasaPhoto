@@ -1,7 +1,5 @@
 package database
 
-import "fmt"
-
 func (db *appdbimpl) InsertFollow(idUserPerforming int, idUserToFollow int) error {
 
 	_, err := db.c.Exec(`
@@ -22,7 +20,7 @@ func (db *appdbimpl) DeleteFollow(idUserPerforming int, idUserToUnFollow int) er
 
 func (db *appdbimpl) GetFollowersList(idUser int) ([]string, error) {
 	var FollowersList []string
-	fmt.Print("lesgoski")
+
 	FollowerRows, err := db.c.Query(`
 	SELECT Username
 	FROM Follow, User

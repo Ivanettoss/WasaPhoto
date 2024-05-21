@@ -23,6 +23,10 @@ func (rt *_router) Handler() http.Handler {
 	rt.router.DELETE("/user/:u_name/ban_user/:user_to_ban", rt.wrap(rt.unBanUser))
 	rt.router.GET("/user/:u_name/banned_list", rt.wrap(rt.banList))
 
+	//photo upload and delete
+	rt.router.POST("/user/:u_name/upload", rt.wrap(rt.uploadPhoto))
+	rt.router.DELETE("/user/:u_name/photo/:photo_id", rt.wrap(rt.deletePhoto))
+
 	/*
 		//like and unlike
 		rt.router.PUT("/user/:u_name/photo/:photo_id/like/:like_name", rt.wrap(rt.likePhoto))
