@@ -31,6 +31,7 @@ func (rt *_router) likePhoto(w http.ResponseWriter, r *http.Request, ps httprout
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+	fmt.Println("swag")
 
 	//photo object of the photo to like
 	/*photoToLike,err:=rt.db.GetPhoto(idPhotoToLike)
