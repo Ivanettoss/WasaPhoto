@@ -38,7 +38,7 @@ func (rt *_router) uploadPhoto(w http.ResponseWriter, r *http.Request, ps httpro
 	// update the struct variables
 	photo.Username = user.Username
 
-	fmt.Println("utente che carica", photo.Username)
+
 
 	photo.UploadDataTime = time.Now().Format("2006-01-02 15:04:05")
 
@@ -83,8 +83,6 @@ func (rt *_router) deletePhoto(w http.ResponseWriter, r *http.Request, ps httpro
 	}
 
 	//check if the pic is uploaded by the right user
-	fmt.Println("username dell'utente", user.Username)
-	fmt.Println("username della foto", photoToDelete.Username)
 
 	if user.Username != photoToDelete.Username {
 

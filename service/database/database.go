@@ -44,17 +44,27 @@ type AppDatabase interface {
 	InsertUser(name string) (int, error)
 	GetUser(id int) (components.User, error)
 	GetId(user string) (int, error)
+
 	InsertFollow(idUserPerforming int, idUserToFollow int) error
 	DeleteFollow(idUserPerforming int, idUserToUnFollow int) error
+
 	InsertBan(idUserPerforming int, idUserToBan int) error
 	DeleteBan(idUserPerforming int, idUserToUnBan int) error
+
+	InsertLike(idUserLike int, idPhoto int) error
+	GetLike(idUserPerforming int, idPhoto int) error
+	DeleteLike(idUserPerforming int, idPhoto int) error
+
 	GetFollowedList(idUser int) ([]string, error)
 	GetFollowersList(idUser int) ([]string, error)
+
 	GetBannedList(idUserPerforming int) ([]string, error)
 
 	InsertPhoto(IdUser int, photo components.Photo) error
 	DeletePhoto(photoId int) error
 	GetPhoto(photoId int) (components.Photo, error)
+	GetPhotoOwnerId(photoId int) (int, error)
+
 	Ping() error
 }
 

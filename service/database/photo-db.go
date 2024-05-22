@@ -58,3 +58,22 @@ func (db *appdbimpl) GetPhoto(photoId int) (components.Photo, error) {
 	}
 	return photo, nil
 }
+
+func (db *appdbimpl) GetPhotoOwnerId(photoId int) (int, error) {
+
+	var idOwner int
+
+	err := db.c.QueryRow(`
+	SELECT IdUser
+	FROM Photo
+	WHERE Photo.IdPhoto=? `, photoId).Scan(&idOwner)
+
+	if errors.Is(err, sql.ErrNoRows) {
+		return 0, ErrPhotoNotFound
+	}
+
+	if err != nil {
+		return 0, err
+	}
+	return idOwner, nil
+}
