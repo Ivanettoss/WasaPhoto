@@ -63,3 +63,16 @@ func (rt *_router) UserAuthentication(username string, w http.ResponseWriter, r 
 	}
 
 }
+func CheckAuth(user components.User, authRaw string) error {
+	token, err := GetBearerToken(authRaw)
+
+	if err != nil {
+		return err
+	}
+
+	if int(user.Id) != token {
+		return err
+	}
+
+	return nil
+}

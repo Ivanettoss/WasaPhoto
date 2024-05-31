@@ -5,7 +5,7 @@ type Username struct {
 }
 
 type User struct {
-	Id       int    `json:"Id"`
+	Id       int    `json:"id"`
 	Username string `json:"username"`
 }
 
@@ -29,7 +29,7 @@ type Photo struct {
 }
 
 type Comment struct {
-	Username       string `json:"username"`
+	User           User   `json:"user"`
 	IdPhoto        int    `json:"idphoto"`
 	IdComment      int    `json:"idcomment"`
 	UploadDataTime string `json:"uploaddatatime"`

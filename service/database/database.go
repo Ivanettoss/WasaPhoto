@@ -50,14 +50,18 @@ type AppDatabase interface {
 
 	InsertBan(idUserPerforming int, idUserToBan int) error
 	DeleteBan(idUserPerforming int, idUserToUnBan int) error
-
+	BanCheck(photoOwnerId int ,userPerforming int) error
 	InsertLike(idUserLike int, idPhoto int) error
 	GetLike(idUserPerforming int, idPhoto int) error
 	DeleteLike(idUserPerforming int, idPhoto int) error
 
+	InsertComment(comment components.Comment) error
+	GetComment(commentId int) (components.Comment, error)
+	DeleteComment(commentId int)(error)
+
+	GetCommentList(idPhoto int) ([]string, error)
 	GetFollowedList(idUser int) ([]string, error)
 	GetFollowersList(idUser int) ([]string, error)
-
 	GetBannedList(idUserPerforming int) ([]string, error)
 
 	InsertPhoto(IdUser int, photo components.Photo) error
@@ -139,6 +143,7 @@ func New(db *sql.DB) (AppDatabase, error) {
 			IdUser INTEGER NOT NULL,
 			IdPhoto INTEGER NOT NULL,  
 			DataTime TEXT NOT NULL ,
+			Text TEXT NOT NULL,
 			FOREIGN KEY	 (IdUser) REFERENCES User,
 			FOREIGN KEY  (IdPhoto) REFERENCES  User 
 		

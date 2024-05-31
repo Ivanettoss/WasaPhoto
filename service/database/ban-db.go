@@ -38,3 +38,24 @@ func (db *appdbimpl) GetBannedList(idUserPerforming int) ([]string, error) {
 	return BannedList, err
 
 }
+
+func (db *appdbimpl) BanCheck(idOwner int, idUserPerforming int) error {
+	var bancheck bool
+
+	err := db.c.QueryRow(`
+	SELECT EXISTS(
+		SELECT IdUser,IdUserBanned
+		FROM Ban
+		WHERE IdUser=? and IdUserBanned=?
+	)
+	`, idOwner, idUserPerforming).Scan(&bancheck)
+
+	if err != nil {
+		return err
+	}
+
+	if bancheck == true {
+		return ErrUserBanned
+	}
+	return nil
+}

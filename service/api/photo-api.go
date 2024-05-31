@@ -38,8 +38,6 @@ func (rt *_router) uploadPhoto(w http.ResponseWriter, r *http.Request, ps httpro
 	// update the struct variables
 	photo.Username = user.Username
 
-
-
 	photo.UploadDataTime = time.Now().Format("2006-01-02 15:04:05")
 
 	//insert the photo into th db
@@ -53,6 +51,7 @@ func (rt *_router) uploadPhoto(w http.ResponseWriter, r *http.Request, ps httpro
 	w.WriteHeader(http.StatusCreated) // 201
 
 	// return the new created photo
+	fmt.Print("gestisci l'encode")
 	_ = json.NewEncoder(w).Encode(photo)
 }
 

@@ -31,7 +31,6 @@ func (rt *_router) likePhoto(w http.ResponseWriter, r *http.Request, ps httprout
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	fmt.Println("swag")
 
 	//photo object of the photo to like
 	/*photoToLike,err:=rt.db.GetPhoto(idPhotoToLike)
@@ -50,7 +49,7 @@ func (rt *_router) likePhoto(w http.ResponseWriter, r *http.Request, ps httprout
 
 	//check if the user is the real owner
 	if photoOwnerId != userOwnerId {
-		http.Error(w, database.ErrPageNotFound.Error(), http.StatusBadRequest)
+		http.Error(w, database.ErrPageNotFound.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -60,6 +59,7 @@ func (rt *_router) likePhoto(w http.ResponseWriter, r *http.Request, ps httprout
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	
 }
 
 func (rt *_router) unlikePhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
