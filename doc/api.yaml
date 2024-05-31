@@ -295,7 +295,7 @@ paths:
       operationId: uncommentPhoto
       responses:
         "204":
-          description: Commentremoveded successfully.
+          description: Comment removed successfully.
 
 
 
@@ -565,6 +565,18 @@ components:
               type: array
               description: the list of the users
               items : { $ref: "#/components/schemas/Username" }
+              minItems: 0
+              maxItems: 999
+
+        Commentlist:
+          title: Commentlist
+          description: a list of coments
+          type: object
+          properties:
+            comments:
+              type: array
+              description: the list of the comment
+              items : { $ref: "#/components/schemas/Comment" }
               minItems: 0
               maxItems: 999
             

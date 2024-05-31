@@ -1,12 +1,14 @@
 package database
 
 import (
+	"fmt"
+
 	"git.sapienzaapps.it/fantasticcoffee/fantastic-coffee-decaffeinated/service/api/components"
 )
 
 func (db *appdbimpl) GetUser(id int) (components.User, error) {
 	// the function return an User(id, username) given one id
-
+	fmt.Println("id preso dal token", id)
 	var Id int
 	var Username string
 

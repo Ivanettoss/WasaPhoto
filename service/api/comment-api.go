@@ -179,6 +179,7 @@ func (rt *_router) getComments(w http.ResponseWriter, r *http.Request, ps httpro
 	// get the bearer token
 	token, err := GetBearerToken(r.Header.Get("Authorization"))
 
+	fmt.Println("token", token)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -186,11 +187,12 @@ func (rt *_router) getComments(w http.ResponseWriter, r *http.Request, ps httpro
 
 	// get the user that is performing the action
 	userPerforming, err := rt.db.GetUser(token)
+	fmt.Print("user performing", userPerforming)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-
+	fmt.Println("user", userPerforming)
 	//get the photo owner from path
 	photoOwner := ps.ByName("u_name")
 	photoOwnerId, err := rt.db.GetId(photoOwner)
@@ -198,6 +200,7 @@ func (rt *_router) getComments(w http.ResponseWriter, r *http.Request, ps httpro
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+	fmt.Println("photo owner", photoOwnerId)
 	//check if the user is banned
 	err = rt.db.BanCheck(photoOwnerId, userPerforming.Id)
 	if err != nil {
@@ -206,7 +209,7 @@ func (rt *_router) getComments(w http.ResponseWriter, r *http.Request, ps httpro
 	}
 
 	// now check if the photo is connsistent
-
+	fmt.Println("qui parte il check della consistenza")
 	//get the photo id from the path
 	photoId, err := strconv.Atoi(ps.ByName("photo_id"))
 	if err != nil {
@@ -220,11 +223,15 @@ func (rt *_router) getComments(w http.ResponseWriter, r *http.Request, ps httpro
 		return
 	}
 
+	fmt.Println("proprietario della foto dal path", photoOwnerId)
+	fmt.Println("proprietario della foto dall'object photo", ownerIdFromPhoto)
+
 	if photoOwnerId != ownerIdFromPhoto {
 		http.Error(w, database.ErrPageNotFound.Error(), http.StatusInternalServerError)
 		return
 	}
 
+	fmt.Println("fino a qui tutto bene")
 	commentList, err := rt.db.GetCommentList(photoId)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -232,7 +239,6 @@ func (rt *_router) getComments(w http.ResponseWriter, r *http.Request, ps httpro
 	}
 
 	w.WriteHeader(http.StatusCreated) // 201
-
 	// return the new object l
 	_ = json.NewEncoder(w).Encode(commentList)
 

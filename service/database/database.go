@@ -59,7 +59,7 @@ type AppDatabase interface {
 	GetComment(commentId int) (components.Comment, error)
 	DeleteComment(commentId int)(error)
 
-	GetCommentList(idPhoto int) ([]string, error)
+	GetCommentList(idPhoto int) ([]components.Comment, error)
 	GetFollowedList(idUser int) ([]string, error)
 	GetFollowersList(idUser int) ([]string, error)
 	GetBannedList(idUserPerforming int) ([]string, error)
