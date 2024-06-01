@@ -58,3 +58,26 @@ func (db *appdbimpl) GetFollowedList(idUser int) ([]string, error) {
 	// format the list
 	return FollowersList, err
 }
+
+func (db *appdbimpl) GetFollowersNumber(idUser int) (int, error) {
+	
+	var followersNumber int 
+	 err := db.c.QueryRow(`
+	SELECT COUNT(Username)
+	FROM Follow, User
+	WHERE Follow.IdUserFollowed=User.IdUser and  Follow.IdUser=? `, idUser).Scan(&followersNumber)
+
+	
+	return followersNumber, err
+}
+
+func (db *appdbimpl) GetFollowedNumber(idUser int) (int, error) {
+	var followedNumber int 
+	 err := db.c.QueryRow(`
+	SELECT COUNT(Username)
+	FROM Follow, User
+	WHERE Follow.IdUserFollowed=User.IdUser and  Follow.IdUser=? `, idUser).Scan(&followedNumber)
+
+	
+	return followedNumber, err
+}

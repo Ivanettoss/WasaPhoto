@@ -35,16 +35,10 @@ func (rt *_router) Handler() http.Handler {
 	rt.router.POST("/user/:u_name/photo/:photo_id/comment", rt.wrap(rt.commentPhoto))
 	rt.router.DELETE("/user/:u_name/photo/:photo_id/comments/:comment_id", rt.wrap(rt.uncommentPhoto))
 		//show comments
-	rt.router.GET("/user/:u_name/photo/:photo_id/comments", rt.wrap(rt.getComments))
-		
-
-		//photo upload and delete
-		/*rt.router.POST("/user/:u_name/upload", rt.wrap(rt.uploadPhoto))
-		rt.router.DELETE("/user/:u_name/photo/:photo_id", rt.wrap(rt.deletePhoto))
-
-		//user
-		rt.router.GET("/user/:u_name/", rt.wrap(rt.getUserProfile))
-	*/
+	rt.router.GET("/user/:u_name/photo/:photo_id/comments", rt.wrap(rt.getComments))	
+       //user
+	rt.router.GET("/user/:u_name/", rt.wrap(rt.getUserProfile))
+	
 
 	// Special routes
 	rt.router.GET("/liveness", rt.liveness)

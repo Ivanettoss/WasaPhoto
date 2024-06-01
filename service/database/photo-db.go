@@ -77,3 +77,16 @@ func (db *appdbimpl) GetPhotoOwnerId(photoId int) (int, error) {
 	}
 	return idOwner, nil
 }
+
+func (db *appdbimpl) GetPostedPhotoNumber(idUser int) (int, error) {
+	var postNumber int
+	err := db.c.QueryRow(`
+	SELECT COUNT(IdPhoto)
+	FROM Photo
+	WHERE Photo.IdUser=?`, idUser).Scan(&postNumber)
+
+	if err != nil {
+		return postNumber, err
+	}
+	return postNumber, nil
+}

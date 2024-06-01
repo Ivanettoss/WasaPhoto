@@ -122,3 +122,6 @@ func (rt *_router) getFollowedList(w http.ResponseWriter, r *http.Request, ps ht
 	_ = json.NewEncoder(w).Encode(followedList)
 
 }
+
+
+

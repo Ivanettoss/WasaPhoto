@@ -11,7 +11,7 @@ type User struct {
 
 type Profile struct {
 	Username    string `json:"username"`
-	NPhoto      int    `json:"nphoto"`
+	Photos		[]Photo `json:"photos"`
 	NFollowers  int    `json:"nfollower"`
 	NFollowed   int    `json:"nfollowed"`
 	NPost       int    `json:"npost"`
@@ -38,7 +38,7 @@ type Comment struct {
 
 type Stream struct {
 	Username  string  `json:"username"`
-	PhotoList []Photo `json:"photolist"`
+	Photos []Photo `json:"photos"`
 }
 
 type Ulist struct {

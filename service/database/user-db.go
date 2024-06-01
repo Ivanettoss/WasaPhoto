@@ -51,3 +51,21 @@ func (db *appdbimpl) GetId(user string) (int, error) {
 	return Id, nil
 
 }
+
+func (db *appdbimpl) GetPhotoStream(user string) (int, error) {
+	// the function return the Id of the given user
+	var Id int
+
+	// select the id with the given user
+	err := db.c.QueryRow(`
+		SELECT IdUser
+		FROM User
+		WHERE User.Username=?`, user).Scan(&Id)
+
+	if err != nil {
+		return Id, err // to do inserire stampa di errore
+	}
+
+	return Id, nil
+
+}
