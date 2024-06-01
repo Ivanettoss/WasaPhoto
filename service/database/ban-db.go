@@ -1,7 +1,5 @@
 package database
 
-import "fmt"
-
 func (db *appdbimpl) InsertBan(idUserPerforming int, idUserToBan int) error {
 
 	_, err := db.c.Exec(`
@@ -41,9 +39,9 @@ func (db *appdbimpl) GetBannedList(idUserPerforming int) ([]string, error) {
 
 }
 
-func (db *appdbimpl) BanCheck(idOwner int, idUserPerforming int) error {
+func (db *appdbimpl) BanCheck(idOwner int, idUserPerforming int) (bool, error) {
 	var bancheck bool
-	fmt.Println("query bancheck eseguita")
+
 	err := db.c.QueryRow(`
 	SELECT EXISTS(
 		SELECT 1
@@ -54,14 +52,9 @@ func (db *appdbimpl) BanCheck(idOwner int, idUserPerforming int) error {
 	`, idOwner, idUserPerforming).Scan(&bancheck)
 
 	if err != nil {
-		fmt.Println("query de merda da error")
-		return err
+
+		return bancheck, err
 	}
 
-	if bancheck == true {
-		return ErrUserBanned
-	}
-
-	fmt.Println("bancheck=", bancheck)
-	return nil
+	return bancheck, nil
 }

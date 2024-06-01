@@ -50,7 +50,7 @@ type AppDatabase interface {
 
 	InsertBan(idUserPerforming int, idUserToBan int) error
 	DeleteBan(idUserPerforming int, idUserToUnBan int) error
-	BanCheck(OwnerId int, userPerforming int) error
+	BanCheck(OwnerId int, userPerforming int) (bool, error)
 
 	InsertLike(idUserLike int, idPhoto int) error
 	GetLike(idUserPerforming int, idPhoto int) error
@@ -61,17 +61,22 @@ type AppDatabase interface {
 	DeleteComment(commentId int) error
 
 	GetCommentList(idPhoto int) ([]components.Comment, error)
+
 	GetFollowedList(idUser int) ([]string, error)
 	GetFollowersList(idUser int) ([]string, error)
 	GetFollowedNumber(idUser int) (int, error)
 	GetFollowersNumber(idUser int) (int, error)
+	GetFollowState(userPerformingId int ,profileOwnerId int)(bool,error)
+
 	GetBannedList(idUserPerforming int) ([]string, error)
+
 
 	InsertPhoto(IdUser int, photo components.Photo) error
 	DeletePhoto(photoId int) error
 	GetPhoto(photoId int) (components.Photo, error)
 	GetPhotoOwnerId(photoId int) (int, error)
 	GetPostedPhotoNumber(idUser int) (int, error)
+	GetUserPhotos(username string) ([]components.Photo, error)
 
 	Ping() error
 }

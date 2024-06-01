@@ -60,24 +60,36 @@ func (db *appdbimpl) GetFollowedList(idUser int) ([]string, error) {
 }
 
 func (db *appdbimpl) GetFollowersNumber(idUser int) (int, error) {
-	
-	var followersNumber int 
-	 err := db.c.QueryRow(`
+
+	var followersNumber int
+	err := db.c.QueryRow(`
 	SELECT COUNT(Username)
 	FROM Follow, User
 	WHERE Follow.IdUserFollowed=User.IdUser and  Follow.IdUser=? `, idUser).Scan(&followersNumber)
 
-	
 	return followersNumber, err
 }
 
 func (db *appdbimpl) GetFollowedNumber(idUser int) (int, error) {
-	var followedNumber int 
-	 err := db.c.QueryRow(`
+	var followedNumber int
+	err := db.c.QueryRow(`
 	SELECT COUNT(Username)
 	FROM Follow, User
 	WHERE Follow.IdUserFollowed=User.IdUser and  Follow.IdUser=? `, idUser).Scan(&followedNumber)
 
-	
 	return followedNumber, err
+}
+
+func (db *appdbimpl) GetFollowState(userPerformingId int, profileOwnerId int) (bool, error) {
+	var followState bool
+	err := db.c.QueryRow(`
+		SELECT EXISTS(
+			SELECT 1
+			FROM Follow
+			WHERE IdUser=?
+			AND IdUserFollowed=?
+			`,userPerformingId,profileOwnerId).Scan(&followState)
+
+			
+	return followState, err
 }

@@ -90,3 +90,26 @@ func (db *appdbimpl) GetPostedPhotoNumber(idUser int) (int, error) {
 	}
 	return postNumber, nil
 }
+
+func (db *appdbimpl) GetUserPhotos(username string) ([]components.Photo, error) {
+	var photoList []components.Photo
+
+	photoRows, err := db.c.Query(`
+	SELECT Photo.IdPhoto,User.Username, Photo.DateTime,Photo.Path
+	FROM Photo,User
+	WHERE Photo.IdUser=User.IdUser and Username=?`, username)
+
+	if err != nil {
+		return photoList, err
+	}
+
+	defer photoRows.Close()
+
+	for photoRows.Next() {
+		var photo components.Photo
+		photoRows.Scan(&photo.IdPhoto, &photo.Username, &photo.UploadDataTime, &photo.PhotoBytes)
+		photoList = append(photoList,photo)
+	}
+
+	return photoList, nil
+}

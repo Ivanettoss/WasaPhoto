@@ -1,6 +1,7 @@
 package api
 
 import (
+	"encoding/json"
 	"net/http"
 
 	"git.sapienzaapps.it/fantasticcoffee/fantastic-coffee-decaffeinated/service/api/components"
@@ -8,21 +9,22 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-
-
 func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 
 	// get the username of the profile owner
-	profileOwner:=ps.ByName("u_name")
+	profileOwner := ps.ByName("u_name")
 
+	// get the id of the user performing
 	token, err := GetBearerToken(r.Header.Get("Authorization"))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusUnauthorized)
 		return
 	}
 
-	//get the profile owner id 
-	profileOwnerId,err:=rt.db.GetId(profileOwner)
+	userPerformingId := token
+
+	//get the profile owner id
+	profileOwnerId, err := rt.db.GetId(profileOwner)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
@@ -30,14 +32,19 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 
 	// get the username of the user performing action (me sa non me serve)
 	/*
-	userPerforming,err:=rt.db.GetUser(token)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusUnauthorized)
-		return
-	}*/
+		userPerforming,err:=rt.db.GetUser(token)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusUnauthorized)
+			return
+		}*/
 
-	// check if the visitor is banned by the owner 
-	err=rt.db.BanCheck(profileOwnerId,token)
+	// check if the visitor is banned by the owner
+	bancheck, err := rt.db.BanCheck(profileOwnerId, userPerformingId)
+	if bancheck != false {
+		// gestire il fatto di mostrare 0 dati ma non fare esplodere todo
+		return
+	}
+
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -46,18 +53,52 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 	//lets build the profile stream
 	var profile components.Profile
 
-	// get the user photos 
+	// get the user photos
+	profile.Photos, err = rt.db.GetUserPhotos(profileOwner)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
-	//get the followers number 
-	profile.NFollowers,err=rt.db.GetFollowersNumber(profileOwnerId)
+	//get the followers number
+	profile.NFollowers, err = rt.db.GetFollowersNumber(profileOwnerId)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
-    // get the followed number 
-	profile.NFollowed,err=rt.db.GetFollowedNumber(profileOwnerId)
+	// get the followed number
+	profile.NFollowed, err = rt.db.GetFollowedNumber(profileOwnerId)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
 	// get the post number (number of photo posted)
-	profile.NPost,err=rt.db.GetPostedPhotoNumber(profileOwnerId)
+	profile.NPost, err = rt.db.GetPostedPhotoNumber(profileOwnerId)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
 	// get the follow state
+	profile.FollowState, err = rt.db.GetFollowState(userPerformingId, profileOwnerId)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
-	// get the ban state 
+	// get the ban state
+	profile.BanState, err = rt.db.BanCheck(userPerformingId, profileOwnerId)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK) // 200
+
+	// return the user profile
+	_ = json.NewEncoder(w).Encode(profile)
+
 }
