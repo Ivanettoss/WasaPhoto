@@ -39,7 +39,7 @@ func (rt *_router) Handler() http.Handler {
        //user
 	rt.router.GET("/user/:u_name/", rt.wrap(rt.getUserProfile))
 	
-
+	rt.router.GET("/user/:u_name/stream", rt.wrap(rt.getStream))
 	// Special routes
 	rt.router.GET("/liveness", rt.liveness)
 

@@ -77,7 +77,7 @@ type AppDatabase interface {
 	GetPhotoOwnerId(photoId int) (int, error)
 	GetPostedPhotoNumber(idUser int) (int, error)
 	GetUserPhotos(username string) ([]components.Photo, error)
-
+	GetStream(userPerformingId int, userPerformingName string ) (components.Stream, error)
 	Ping() error
 }
 
