@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"git.sapienzaapps.it/fantasticcoffee/fantastic-coffee-decaffeinated/service/api/components"
@@ -13,6 +14,8 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 
 	// get the username of the profile owner
 	profileOwner := ps.ByName("u_name")
+
+	fmt.Println("user from path", profileOwner)
 
 	// get the id of the user performing
 	token, err := GetBearerToken(r.Header.Get("Authorization"))
@@ -30,6 +33,7 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 		return
 	}
 
+	fmt.Println("profile owner id ", profileOwnerId)
 	// get the username of the user performing action (me sa non me serve)
 	/*
 		userPerforming,err:=rt.db.GetUser(token)
@@ -45,11 +49,14 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 		return
 	}
 
+	fmt.Println("bancheck eseguito vamos")
+
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
+	fmt.Println("inizia la stream-building")
 	//lets build the profile stream
 	var profile components.Profile
 
@@ -59,6 +66,8 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
+	fmt.Println("photos ottenute bene")
 
 	//get the followers number
 	profile.NFollowers, err = rt.db.GetFollowersNumber(profileOwnerId)
@@ -80,21 +89,24 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	fmt.Println("numero post ottenuto daje")
 
+	fmt.Println("userperformingid", userPerformingId)
+	fmt.Println("profile owner id", profileOwnerId)
 	// get the follow state
 	profile.FollowState, err = rt.db.GetFollowState(userPerformingId, profileOwnerId)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
+	fmt.Println("followstate ottenuto")
 	// get the ban state
 	profile.BanState, err = rt.db.BanCheck(userPerformingId, profileOwnerId)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
+	fmt.Println("bancheck ottenutoto daje")
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK) // 200
 

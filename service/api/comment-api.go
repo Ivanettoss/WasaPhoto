@@ -202,7 +202,7 @@ func (rt *_router) getComments(w http.ResponseWriter, r *http.Request, ps httpro
 	}
 	fmt.Println("photo owner", photoOwnerId)
 	//check if the user is banned
-	banstatus,err := rt.db.BanCheck(photoOwnerId, userPerforming.Id)
+	banstatus, err := rt.db.BanCheck(photoOwnerId, userPerforming.Id)
 
 	if banstatus != false {
 		fmt.Println("utente bannato gestisci robe")

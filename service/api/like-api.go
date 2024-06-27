@@ -32,13 +32,11 @@ func (rt *_router) likePhoto(w http.ResponseWriter, r *http.Request, ps httprout
 		return
 	}
 
-	//photo object of the photo to like
-	/*photoToLike,err:=rt.db.GetPhoto(idPhotoToLike)
+	photoToLike, err := rt.db.GetPhoto(idPhotoToLike)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	*/
 
 	// get the id of the owner from a photo
 	photoOwnerId, err := rt.db.GetPhotoOwnerId(idPhotoToLike)
@@ -59,7 +57,14 @@ func (rt *_router) likePhoto(w http.ResponseWriter, r *http.Request, ps httprout
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	
+
+	//update the like counter
+	photoToLike.NLikes, err = rt.db.CountLikes(idPhotoToLike)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 }
 
 func (rt *_router) unlikePhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
@@ -82,12 +87,11 @@ func (rt *_router) unlikePhoto(w http.ResponseWriter, r *http.Request, ps httpro
 	}
 
 	//photo object of the photo to like
-	/*photoToLike,err:=rt.db.GetPhoto(idPhotoToLike)
+	photoToLike, err := rt.db.GetPhoto(idPhotoToLike)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	*/
 
 	// get the id of the owner from a photo
 	photoOwnerId, err := rt.db.GetPhotoOwnerId(idPhotoToLike)
@@ -108,4 +112,12 @@ func (rt *_router) unlikePhoto(w http.ResponseWriter, r *http.Request, ps httpro
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
+	//update the like counter
+	photoToLike.NLikes, err = rt.db.CountLikes(idPhotoToLike)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 }

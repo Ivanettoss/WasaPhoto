@@ -3,7 +3,6 @@ package database
 import (
 	"database/sql"
 	"errors"
-	
 )
 
 func (db *appdbimpl) InsertLike(idUserLike int, idPhoto int) error {
@@ -25,7 +24,7 @@ func (db *appdbimpl) DeleteLike(idUserPerforming int, idPhoto int) error {
 	if err != nil {
 		return err
 	}
-	
+
 	_, err = db.c.Exec(`
 		DELETE FROM Like
 		WHERE IdPhoto=? and IdUser=?`, idPhoto, idUserPerforming)
@@ -39,7 +38,7 @@ func (db *appdbimpl) DeleteLike(idUserPerforming int, idPhoto int) error {
 }
 
 func (db *appdbimpl) GetLike(idUserPerforming int, idPhoto int) error {
-	
+
 	_, err := db.c.Query(`
 	SELECT IdUser,IdPhoto
 	FROM Like
@@ -54,4 +53,18 @@ func (db *appdbimpl) GetLike(idUserPerforming int, idPhoto int) error {
 	}
 
 	return nil
+}
+
+func (db *appdbimpl) CountLikes(idPhoto int) (int, error) {
+	nlikes := 0
+	err := db.c.QueryRow(`
+	SELECT COUNT(*)
+	FROM Like
+	WHERE photo?`, idPhoto).Scan(&nlikes)
+
+	if errors.Is(err, sql.ErrNoRows) {
+		return nlikes, ErrPhotoNotFound
+	}
+
+	return nlikes, err
 }

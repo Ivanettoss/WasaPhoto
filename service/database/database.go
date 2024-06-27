@@ -55,6 +55,7 @@ type AppDatabase interface {
 	InsertLike(idUserLike int, idPhoto int) error
 	GetLike(idUserPerforming int, idPhoto int) error
 	DeleteLike(idUserPerforming int, idPhoto int) error
+	CountLikes(idPhoto int) (int, error)
 
 	InsertComment(comment components.Comment) error
 	GetComment(commentId int) (components.Comment, error)
@@ -66,10 +67,9 @@ type AppDatabase interface {
 	GetFollowersList(idUser int) ([]string, error)
 	GetFollowedNumber(idUser int) (int, error)
 	GetFollowersNumber(idUser int) (int, error)
-	GetFollowState(userPerformingId int ,profileOwnerId int)(bool,error)
+	GetFollowState(userPerformingId int, profileOwnerId int) (bool, error)
 
 	GetBannedList(idUserPerforming int) ([]string, error)
-
 
 	InsertPhoto(IdUser int, photo components.Photo) error
 	DeletePhoto(photoId int) error
@@ -77,7 +77,7 @@ type AppDatabase interface {
 	GetPhotoOwnerId(photoId int) (int, error)
 	GetPostedPhotoNumber(idUser int) (int, error)
 	GetUserPhotos(username string) ([]components.Photo, error)
-	GetStream(userPerformingId int, userPerformingName string ) (components.Stream, error)
+	GetStream(userPerformingId int, userPerformingName string) (components.Stream, error)
 	Ping() error
 }
 

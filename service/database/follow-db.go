@@ -87,9 +87,8 @@ func (db *appdbimpl) GetFollowState(userPerformingId int, profileOwnerId int) (b
 			SELECT 1
 			FROM Follow
 			WHERE IdUser=?
-			AND IdUserFollowed=?
-			`,userPerformingId,profileOwnerId).Scan(&followState)
+			AND IdUserFollowed=?)
+			`, userPerformingId, profileOwnerId).Scan(&followState)
 
-			
 	return followState, err
 }
