@@ -212,7 +212,7 @@ paths:
       summary: Get the banned users list 
       description: 
         Get  the banned list 
-      operationId: getFollowersList
+      operationId: getBannedList
       responses:
         "200":
           description: List obtained successfully.
@@ -315,7 +315,11 @@ paths:
       responses:
         "200":
           description: List obtained successfully.
-
+          content:
+            application/json:
+              schema:
+               { $ref: "#/components/schemas/Commentlist"}
+            
 
 
 
@@ -653,6 +657,4 @@ components:
     NotFound:
       description: The server cannot find the requested resource.
     InternalServerError:
-      description: The server encounted an internal error. Further info in server logs.       
-
-
+      description: The server encounted an internal error. Further info in server logs.
