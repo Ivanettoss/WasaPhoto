@@ -451,7 +451,7 @@ components:
                 description: bytes of the photo
                 type: string
                 minLength: 0
-                maxLength: 9999
+                maxLength: 999
                 example: data:image/jpg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/AAAAAAAAAAAAAQIDAAQF/
                 pattern: ".*"
 
@@ -484,7 +484,7 @@ components:
                     description: bytes of the photo
                     type: string
                     minLength: 0
-                    maxLength: 9999
+                    maxLength: 999
                     example: data:image/jpg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/AAAAAAAAAAAAAQIDAAQF/
                     pattern: ".*"
 
@@ -528,7 +528,7 @@ components:
               type: array
               items: { $ref: "#/components/schemas/Photo" }
               minItems: 0
-              maxItems: 9999 
+              maxItems: 999
             nfollowers:
               description: number of the followers
               type: integer
@@ -558,7 +558,7 @@ components:
                 description: The photos of the user stream.
                 items: { $ref: "#/components/schemas/Photo" }
                 minItems: 0
-                maxItems: 9999
+                maxItems: 999
 
         Ulist:
           title: ulist
