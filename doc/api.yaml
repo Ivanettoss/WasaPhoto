@@ -88,7 +88,7 @@ paths:
         him is added to the following list 
       operationId: followUser
       responses:
-        "200":
+        "201":
           description: User followed successfully
           content:
             application/json:
@@ -178,7 +178,7 @@ paths:
         If the user exists, is banned 
       operationId: banUser 
       responses:
-        "200":
+        "204":
           description: User banned successfully.
         "400": { $ref: "#/components/responses/BadRequest" }
         "401": { $ref: "#/components/responses/Unauthorized" }
@@ -192,7 +192,7 @@ paths:
       summary: Unban a user
       description:
         If the user is banned yet, unbunned him
-      operationId: unbunUser
+      operationId: unbanUser
       responses:
         "204":
           description: User unbunned successfully.
@@ -237,7 +237,7 @@ paths:
         Put a like on an existing photo 
       operationId: likePhoto
       responses:
-        "200":
+        "204":
           description: Photo liked successfully.
 
     delete:
@@ -252,6 +252,30 @@ paths:
         "204":
           description: Photo unliked successfully.
 
+
+
+  /user/{u_name}:
+    parameters:
+    - {  $ref: "#/components/parameters/u_name" }
+  
+
+    put: 
+      security:
+        - bearerAuth: []
+      tags: ["Profile"] 
+      summary: Set the username 
+      description: |-
+        Change the current username  
+      operationId: setMyUserName
+      requestBody:
+        description: The new name.
+        required: true
+        content:
+          application/json:
+            schema : { $ref: "#/components/parameters/u_name" }
+      responses:
+        "204":
+          description: Name set successfully.
 
 
   /user/{u_name}/photo/{photo_id}/comment:
@@ -275,8 +299,11 @@ paths:
           application/json:
             schema : { $ref: "#/components/schemas/Comment" }
       responses:
-        "200":
+        "201":
           description:  Comment added successfully.
+          content:
+            application/json:  
+              schema: { $ref: "#/components/schemas/Comment" }
 
 
   /user/{u_name}/photo/{photo_id}/comments/{comment_id}:
@@ -344,6 +371,9 @@ paths:
         responses:
           "201":
             description:  Photo uploaded successfully.
+            content:
+              application/json:  
+                schema: { $ref: "#/components/schemas/Photo" }
 
 
 
@@ -362,7 +392,7 @@ paths:
           Delete a photo that exists on your profile  
       operationId: deletePhoto                                              
       responses:
-          "201":
+          "204":
             description:  Photo deleted successfully.
 
 
@@ -496,7 +526,7 @@ components:
               description: a comment under a photo
               type: object
               properties:
-                user: { $ref: "#/components/schemas/User" }
+                user: { $ref: "#/components/schemas/Username" }
                
                 id_comment:
                   description: comment identifier
