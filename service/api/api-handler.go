@@ -27,21 +27,24 @@ func (rt *_router) Handler() http.Handler {
 	rt.router.POST("/user/:u_name/upload", rt.wrap(rt.uploadPhoto))
 	rt.router.DELETE("/user/:u_name/photo/:photo_id", rt.wrap(rt.deletePhoto))
 
-		//like and unlike
+	//like and unlike
 	rt.router.PUT("/user/:u_name/photo/:photo_id/like/:like_name", rt.wrap(rt.likePhoto))
 	rt.router.DELETE("/user/:u_name/photo/:photo_id/like/:like_name", rt.wrap(rt.unlikePhoto))
 
-		//comment and delete it
+	//comment and delete it
 	rt.router.POST("/user/:u_name/photo/:photo_id/comment", rt.wrap(rt.commentPhoto))
 	rt.router.DELETE("/user/:u_name/photo/:photo_id/comments/:comment_id", rt.wrap(rt.uncommentPhoto))
-		//show comments
-	rt.router.GET("/user/:u_name/photo/:photo_id/comments", rt.wrap(rt.getComments))	
-       //user
-	rt.router.GET("/user/:u_name/", rt.wrap(rt.getUserProfile))
-	
+	//show comments
+	rt.router.GET("/user/:u_name/photo/:photo_id/comments", rt.wrap(rt.getComments))
+	//user
+	rt.router.GET("/searchuser/:u_name/", rt.wrap(rt.getUserProfile))
+
 	rt.router.GET("/user/:u_name/stream", rt.wrap(rt.getStream))
+
 	// Special routes
 	rt.router.GET("/liveness", rt.liveness)
+
+	rt.router.GET("/photo/:photo_id", rt.wrap(rt.getPhoto))
 
 	return rt.router
 }

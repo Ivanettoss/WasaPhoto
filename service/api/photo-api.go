@@ -51,7 +51,7 @@ func (rt *_router) uploadPhoto(w http.ResponseWriter, r *http.Request, ps httpro
 	w.WriteHeader(http.StatusCreated) // 201
 
 	// return the new created photo
-	fmt.Print("gestisci l'encode")
+
 	_ = json.NewEncoder(w).Encode(photo)
 }
 
@@ -98,5 +98,30 @@ func (rt *_router) deletePhoto(w http.ResponseWriter, r *http.Request, ps httpro
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK) // 200
+
+}
+
+func (rt *_router) getPhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
+
+	photoId := ps.ByName("photo_id")
+
+	//cast the id, i need an int
+	photoIdInt, err := strconv.Atoi(photoId)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	//get the photo obejct to delete
+	photoToCatch, err := rt.db.GetPhoto(photoIdInt)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK) // 200
+
+	_ = json.NewEncoder(w).Encode(photoToCatch)
 
 }

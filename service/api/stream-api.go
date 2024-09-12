@@ -2,7 +2,6 @@ package api
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"git.sapienzaapps.it/fantasticcoffee/fantastic-coffee-decaffeinated/service/api/reqcontext"
@@ -10,7 +9,7 @@ import (
 )
 
 func (rt *_router) getStream(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
-	// autenticate the user performing the action 
+	// autenticate the user performing the action
 	user, err := rt.UserAuthentication("u_name", w, r, ps)
 
 	if err != nil {
@@ -18,8 +17,6 @@ func (rt *_router) getStream(w http.ResponseWriter, r *http.Request, ps httprout
 		return
 	}
 
-	fmt.Println("user id",user.Id)
-	fmt.Println("user name",user.Username)
 	currentStream, err := rt.db.GetStream(user.Id, user.Username)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusUnauthorized)

@@ -2,26 +2,41 @@
     export default{
         data: function(){
             return {
-                errormsg:"",
-                username: localStorage.getItem("token"),
+                errormsg:null,
+                username:"",
                 token: localStorage.getItem("token"),
-                nFollowers:""
-                nFollowing:""
-                followState:false 
-                banState: false 
+                nFollowers:0,
+                nFollowing:0,
+                followState:false, 
+                banState: false,
+                photos:[],
+                nPost:0
 
             }
 
-        }
+        },
         async buildProfile(){
             try{
-                let response = await this.$axios.get("/user/" + this.$route.params.uname, {
-						headers: {
-							Authorization: "Bearer " + this.token,
-						}
-					});
+                let response = await this.$axios.get("/searchuser/" + this.$route.params.uname)
+                this.username=response.data.username
+                this.photos=response.data.photos
+                this.nFollowers=response.data.nfollower
+                this.nFollowing=response.data.nfollowed
+                this.nPost=response.data.npost
+
+                if (this.username != localStorage.getItem("username"))
+                {
+                    this.followState=response.data.followstate
+                    this.banState=response.data.banstate
+                }
+
+
+            } 
+            catch(e){
+                 this.errormsg = e.toString();
             }
         }
+    
     }
 </script>
 
@@ -50,7 +65,6 @@
                     <a class="nav-link dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Settings</a>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
                         <a class="dropdown-item">LogOut</a>
-                        <a class="dropdown-item">Change password</a>
                     </div>
                 </li>
             </ul>
@@ -74,16 +88,21 @@
                 <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQb-NGEQDekk2BwsllLjk4tcIM_BPIzXECdsg&s" alt="" class="img-circle img-fluid">
             </div>
             <div class="col-md-9 p-t-2">
-                <h2 class="h2-responsive">Ivanettos <button type="button" class="btn btn-info-outline waves-effect">Follow</button></h2>
+                <h2 class="h2-responsive">{{ username }}
+
+                    <button v-if="this.username != localStorage.getItem('username')" type="button" class="btn btn-info-outline waves-effect">Follow</button>
+                    <button v-else type="button" class="btn btn-info-outline waves-effect">upload</button>
+
+                </h2>
 
                 <ul class="flex-menu">
-                    <li><strong>41</strong> posts</li>
-                    <li><strong>47k</strong> followers</li>
-                    <li><strong>208</strong> following</li>
+                    <li><strong>{{ nPost }}</strong> Posts</li>
+                    <li><strong>{{ nFollowers }}</strong> Followers</li>
+                    <li><strong>{{ nFollowing }}</strong> Following</li>
                 </ul>
             </div>
         </div>
-
+   </div> 
         <div class="row">
             <div class="col-sm-12 col-md-6 col-lg-4">
                 <div class="view overlay hm-black-light m-b-2">
@@ -91,7 +110,7 @@
                     <div class="mask flex-center">
                         <ul class="flex-menu">
                             <li><p class="white-text"><i class="fa fa-comment" aria-hidden="true"></i> 32</p></li>
-                            <li><p class="white-text"><i class="fa fa-heart" aria-hidden="true"></i> 1.2K</i></p></li>
+                            <li><p class="white-text"><i class="fa fa-heart" aria-hidden="true"></i> 1.2K</p></li>
                         </ul>
                     </div>
                 </div>
@@ -101,12 +120,6 @@
 </template>
 
 <style>
-body {
-    background:#eee;
-}
-
-html,
-body,
 .view {
     height:100%;
 }

@@ -33,30 +33,17 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 		return
 	}
 
-	fmt.Println("profile owner id ", profileOwnerId)
-	// get the username of the user performing action (me sa non me serve)
-	/*
-		userPerforming,err:=rt.db.GetUser(token)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusUnauthorized)
-			return
-		}*/
-
-	// check if the visitor is banned by the owner
 	bancheck, err := rt.db.BanCheck(profileOwnerId, userPerformingId)
 	if bancheck != false {
 		// gestire il fatto di mostrare 0 dati ma non fare esplodere todo
 		return
 	}
 
-	fmt.Println("bancheck eseguito vamos")
-
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	fmt.Println("inizia la stream-building")
 	//lets build the profile stream
 	var profile components.Profile
 
@@ -66,8 +53,6 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
-	fmt.Println("photos ottenute bene")
 
 	//get the followers number
 	profile.NFollowers, err = rt.db.GetFollowersNumber(profileOwnerId)
@@ -89,24 +74,21 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	fmt.Println("numero post ottenuto daje")
 
-	fmt.Println("userperformingid", userPerformingId)
-	fmt.Println("profile owner id", profileOwnerId)
 	// get the follow state
 	profile.FollowState, err = rt.db.GetFollowState(userPerformingId, profileOwnerId)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	fmt.Println("followstate ottenuto")
+
 	// get the ban state
 	profile.BanState, err = rt.db.BanCheck(userPerformingId, profileOwnerId)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	fmt.Println("bancheck ottenutoto daje")
+
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK) // 200
 
