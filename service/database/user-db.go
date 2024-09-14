@@ -1,14 +1,12 @@
 package database
 
 import (
-	"fmt"
-
 	"git.sapienzaapps.it/fantasticcoffee/fantastic-coffee-decaffeinated/service/api/components"
 )
 
 func (db *appdbimpl) GetUser(id int) (components.User, error) {
 	// the function return an User(id, username) given one id
-	fmt.Println("id preso dal token", id)
+
 	var Id int
 	var Username string
 
@@ -18,7 +16,7 @@ func (db *appdbimpl) GetUser(id int) (components.User, error) {
 		FROM User
 		WHERE User.IdUser=?`, id).Scan(&Id, &Username)
 
-	//declare a user object
+	// declare a user object
 	var user components.User
 
 	if err != nil {
@@ -51,5 +49,3 @@ func (db *appdbimpl) GetId(user string) (int, error) {
 	return Id, nil
 
 }
-
-

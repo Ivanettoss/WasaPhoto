@@ -25,7 +25,10 @@ func (db *appdbimpl) GetStream(userPerformingId int, userPerformingName string) 
 
 	for StreamRows.Next() {
 		var photo components.Photo
-		StreamRows.Scan(&photo.Username, &photo.IdPhoto, &photo.UploadDataTime, &photo.PhotoBytes)
+		err = StreamRows.Scan(&photo.Username, &photo.IdPhoto, &photo.UploadDataTime, &photo.PhotoBytes)
+		if err != nil {
+			return stream, err
+		}
 		photos = append(photos, photo)
 	}
 

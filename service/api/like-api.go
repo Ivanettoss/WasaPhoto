@@ -1,7 +1,6 @@
 package api
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -12,19 +11,17 @@ import (
 
 func (rt *_router) likePhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 
-	//authenticate the user performing
+	// authenticate the user performing
 	user, err := rt.UserAuthentication("like_name", w, r, ps)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusUnauthorized)
 		return
 	}
 
-	fmt.Println("autenticazione utente che deve mettere like fatta: ", user.Username)
-
-	//id of the photo to like converted in int
+	// id of the photo to like converted in int
 	idPhotoToLike, err := strconv.Atoi(ps.ByName("photo_id"))
 
-	//id of the photo owner
+	// id of the photo owner
 	userOwnerId, err := rt.db.GetId(ps.ByName("u_name"))
 
 	if err != nil {
@@ -45,20 +42,20 @@ func (rt *_router) likePhoto(w http.ResponseWriter, r *http.Request, ps httprout
 		return
 	}
 
-	//check if the user is the real owner
+	// check if the user is the real owner
 	if photoOwnerId != userOwnerId {
 		http.Error(w, database.ErrPageNotFound.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	//insert the like
+	// insert the like
 	err = rt.db.InsertLike(user.Id, idPhotoToLike)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	//update the like counter
+	// update the like counter
 	photoToLike.NLikes, err = rt.db.CountLikes(idPhotoToLike)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -69,24 +66,24 @@ func (rt *_router) likePhoto(w http.ResponseWriter, r *http.Request, ps httprout
 
 func (rt *_router) unlikePhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 
-	//authenticate the user performing
+	// authenticate the user performing
 	user, err := rt.UserAuthentication("like_name", w, r, ps)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusUnauthorized)
 		return
 	}
 
-	//id of the photo to like converted in int
+	// id of the photo to like converted in int
 	idPhotoToLike, err := strconv.Atoi(ps.ByName("photo_id"))
 
-	//id of the photo owner
+	// id of the photo owner
 	userOwnerId, err := rt.db.GetId(ps.ByName("u_name"))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	//photo object of the photo to like
+	// photo object of the photo to like
 	photoToLike, err := rt.db.GetPhoto(idPhotoToLike)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -100,20 +97,20 @@ func (rt *_router) unlikePhoto(w http.ResponseWriter, r *http.Request, ps httpro
 		return
 	}
 
-	//check if the user is the real owner
+	// check if the user is the real owner
 	if photoOwnerId != userOwnerId {
 		http.Error(w, database.ErrPageNotFound.Error(), http.StatusBadRequest)
 		return
 	}
 
-	//delete the like
+	// delete the like
 	err = rt.db.DeleteLike(user.Id, idPhotoToLike)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	//update the like counter
+	// update the like counter
 	photoToLike.NLikes, err = rt.db.CountLikes(idPhotoToLike)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

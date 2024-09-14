@@ -1,8 +1,6 @@
 package database
 
 import (
-	"fmt"
-
 	"git.sapienzaapps.it/fantasticcoffee/fantastic-coffee-decaffeinated/service/api/components"
 )
 
@@ -62,8 +60,6 @@ func (db *appdbimpl) GetCommentList(idPhoto int) ([]components.Comment, error) {
 	FROM  User,Comment
 	WHERE Comment.IdUser=User.IdUser and  Comment.IdPhoto=?`, idPhoto)
 
-	fmt.Println("query eseguita si trappa")
-
 	if err != nil {
 		return CommentList, err
 	}
@@ -71,11 +67,13 @@ func (db *appdbimpl) GetCommentList(idPhoto int) ([]components.Comment, error) {
 
 	for CommentRows.Next() {
 		var comment components.Comment
-		CommentRows.Scan(&comment.User.Username, &comment.User.Id, &comment.IdPhoto, &comment.IdComment, &comment.UploadDataTime, &comment.Text)
+		err = CommentRows.Scan(&comment.User.Username, &comment.User.Id, &comment.IdPhoto, &comment.IdComment, &comment.UploadDataTime, &comment.Text)
+		if err != nil {
+			return CommentList, err
+		}
 		CommentList = append(CommentList, comment)
 	}
 
-	fmt.Println("comment LIST", CommentList)
 	// format the list
 	return CommentList, nil
 }

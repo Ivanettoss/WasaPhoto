@@ -2,7 +2,7 @@ package api
 
 import (
 	"encoding/json"
-	"fmt"
+
 	"net/http"
 
 	"git.sapienzaapps.it/fantasticcoffee/fantastic-coffee-decaffeinated/service/api/components"
@@ -15,8 +15,6 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 	// get the username of the profile owner
 	profileOwner := ps.ByName("u_name")
 
-	fmt.Println("user from path", profileOwner)
-
 	// get the id of the user performing
 	token, err := GetBearerToken(r.Header.Get("Authorization"))
 	if err != nil {
@@ -26,7 +24,7 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 
 	userPerformingId := token
 
-	//get the profile owner id
+	// get the profile owner id
 	profileOwnerId, err := rt.db.GetId(profileOwner)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -44,7 +42,7 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 		return
 	}
 
-	//lets build the profile stream
+	// lets build the profile stream
 	var profile components.Profile
 
 	// get the user photos
@@ -54,7 +52,7 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 		return
 	}
 
-	//get the followers number
+	// get the followers number
 	profile.NFollowers, err = rt.db.GetFollowersNumber(profileOwnerId)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

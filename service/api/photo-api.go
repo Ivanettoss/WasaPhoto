@@ -2,7 +2,7 @@ package api
 
 import (
 	"encoding/json"
-	"fmt"
+
 	"net/http"
 	"strconv"
 	"time"
@@ -14,11 +14,10 @@ import (
 )
 
 func (rt *_router) uploadPhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
-	//user auth
+	// user auth
 
 	user, err := rt.UserAuthentication("u_name", w, r, ps)
 
-	fmt.Println("utente post autenticazione", user.Username)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
@@ -40,7 +39,7 @@ func (rt *_router) uploadPhoto(w http.ResponseWriter, r *http.Request, ps httpro
 
 	photo.UploadDataTime = time.Now().Format("2006-01-02 15:04:05")
 
-	//insert the photo into th db
+	// insert the photo into th db
 	err = rt.db.InsertPhoto(user.Id, photo)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -57,7 +56,7 @@ func (rt *_router) uploadPhoto(w http.ResponseWriter, r *http.Request, ps httpro
 
 func (rt *_router) deletePhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 
-	//user auth
+	// user auth
 	user, err := rt.UserAuthentication("u_name", w, r, ps)
 
 	if err != nil {
@@ -67,21 +66,21 @@ func (rt *_router) deletePhoto(w http.ResponseWriter, r *http.Request, ps httpro
 
 	photoId := ps.ByName("photo_id")
 
-	//cast the id, i need an int
+	// cast the id, i need an int
 	photoIdInt, err := strconv.Atoi(photoId)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	//get the photo obejct to dfelete
+	// get the photo obejct to dfelete
 	photoToDelete, err := rt.db.GetPhoto(photoIdInt)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	//check if the pic is uploaded by the right user
+	// check if the pic is uploaded by the right user
 
 	if user.Username != photoToDelete.Username {
 
@@ -105,14 +104,14 @@ func (rt *_router) getPhoto(w http.ResponseWriter, r *http.Request, ps httproute
 
 	photoId := ps.ByName("photo_id")
 
-	//cast the id, i need an int
+	// cast the id, i need an int
 	photoIdInt, err := strconv.Atoi(photoId)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	//get the photo obejct to delete
+	// get the photo obejct to delete
 	photoToCatch, err := rt.db.GetPhoto(photoIdInt)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)

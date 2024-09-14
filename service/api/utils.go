@@ -51,7 +51,7 @@ func (rt *_router) UserAuthentication(username string, w http.ResponseWriter, r 
 	}
 
 	if idFromDB == token {
-		//coincidono, posso autenticare e returnare l'utente
+		// coincidono, posso autenticare e returnare l'utente
 
 		user.Id = idFromDB
 		user.Username = uname
@@ -59,7 +59,7 @@ func (rt *_router) UserAuthentication(username string, w http.ResponseWriter, r 
 		return user, nil
 
 	} else {
-		return user, err //to do return the errore corretto
+		return user, err // to do return the errore corretto
 	}
 
 }

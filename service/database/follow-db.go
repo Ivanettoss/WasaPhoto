@@ -30,7 +30,10 @@ func (db *appdbimpl) GetFollowersList(idUser int) ([]string, error) {
 
 	for FollowerRows.Next() {
 		var name string
-		FollowerRows.Scan(&name)
+		err = FollowerRows.Scan(&name)
+		if err != nil {
+			return FollowersList, err
+		}
 		FollowersList = append(FollowersList, name)
 	}
 
@@ -51,7 +54,10 @@ func (db *appdbimpl) GetFollowedList(idUser int) ([]string, error) {
 
 	for FollowerRows.Next() {
 		var name string
-		FollowerRows.Scan(&name)
+		err = FollowerRows.Scan(&name)
+		if err != nil {
+			return FollowersList, err
+		}
 		FollowersList = append(FollowersList, name)
 	}
 

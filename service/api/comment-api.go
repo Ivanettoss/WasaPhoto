@@ -2,7 +2,6 @@ package api
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -15,25 +14,21 @@ import (
 
 func (rt *_router) commentPhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 
-	//get the comment object from the request body
+	// get the comment object from the request body
 	var comment components.Comment
 	err := json.NewDecoder(r.Body).Decode(&comment)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	fmt.Println(comment)
 
-	//get the comment username from the body
+	// get the comment username from the body
 	userNameFromComment := comment.User.Username
-	fmt.Println("username dal body", userNameFromComment)
 
 	// get the id from the db linked to the username
 	idFromDatabase, err := rt.db.GetId(userNameFromComment)
-	fmt.Println("id dell'username dal db", idFromDatabase)
 
-	fmt.Println("id dell'username nel body")
-	//check if the ids match
+	// check if the ids match
 	if idFromDatabase != comment.User.Id {
 		http.Error(w, database.ErrPageNotFound.Error(), http.StatusInternalServerError)
 		return
@@ -46,24 +41,20 @@ func (rt *_router) commentPhoto(w http.ResponseWriter, r *http.Request, ps httpr
 		return
 	}
 
-	//get the photo id from the comment
+	// get the photo id from the comment
 	photoId, err := strconv.Atoi(ps.ByName("photo_id"))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	fmt.Println("id della foto dal body", photoId)
-
-	//id of the photo owner
+	// id of the photo owner
 	userOwnerId, err := rt.db.GetId(ps.ByName("u_name"))
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-
-	fmt.Println("username proprietario della foto dal path", userOwnerId)
 
 	// get the id of the owner from a photo
 	photoOwnerId, err := rt.db.GetPhotoOwnerId(photoId)
@@ -72,9 +63,7 @@ func (rt *_router) commentPhoto(w http.ResponseWriter, r *http.Request, ps httpr
 		return
 	}
 
-	fmt.Println("username proprietario della foto dal db  ", userOwnerId)
-
-	//check if the user is the real owner
+	// check if the user is the real owner
 	if photoOwnerId != userOwnerId {
 		http.Error(w, database.ErrPageNotFound.Error(), http.StatusInternalServerError)
 		return
@@ -107,15 +96,13 @@ func (rt *_router) uncommentPhoto(w http.ResponseWriter, r *http.Request, ps htt
 		return
 	}
 
-	fmt.Println("id del commento dal path", commentId)
-
 	// get the comment object from db
 	commentToDelete, err := rt.db.GetComment(commentId)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	fmt.Println(" commento selezionato", commentToDelete)
+
 	// we want to see if the user that is performing the action is the comment author
 
 	// get token
@@ -146,7 +133,7 @@ func (rt *_router) uncommentPhoto(w http.ResponseWriter, r *http.Request, ps htt
 		return
 	}
 
-	//get the user owner of the photo from the path
+	// get the user owner of the photo from the path
 	username := ps.ByName("u_name")
 	userId, err := rt.db.GetId(username)
 	if err != nil {
@@ -179,7 +166,6 @@ func (rt *_router) getComments(w http.ResponseWriter, r *http.Request, ps httpro
 	// get the bearer token
 	token, err := GetBearerToken(r.Header.Get("Authorization"))
 
-	fmt.Println("token", token)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -187,25 +173,25 @@ func (rt *_router) getComments(w http.ResponseWriter, r *http.Request, ps httpro
 
 	// get the user that is performing the action
 	userPerforming, err := rt.db.GetUser(token)
-	fmt.Print("user performing", userPerforming)
+
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	fmt.Println("user", userPerforming)
-	//get the photo owner from path
+
+	// get the photo owner from path
 	photoOwner := ps.ByName("u_name")
 	photoOwnerId, err := rt.db.GetId(photoOwner)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	fmt.Println("photo owner", photoOwnerId)
-	//check if the user is banned
+
+	// check if the user is banned
 	banstatus, err := rt.db.BanCheck(photoOwnerId, userPerforming.Id)
 
 	if banstatus != false {
-		fmt.Println("utente bannato gestisci robe")
+		// TODO
 		return
 	}
 
@@ -215,29 +201,25 @@ func (rt *_router) getComments(w http.ResponseWriter, r *http.Request, ps httpro
 	}
 
 	// now check if the photo is connsistent
-	fmt.Println("qui parte il check della consistenza")
-	//get the photo id from the path
+
+	// get the photo id from the path
 	photoId, err := strconv.Atoi(ps.ByName("photo_id"))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	//get the user owner id from the photo id
+	// get the user owner id from the photo id
 	ownerIdFromPhoto, err := rt.db.GetPhotoOwnerId(photoId)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	fmt.Println("proprietario della foto dal path", photoOwnerId)
-	fmt.Println("proprietario della foto dall'object photo", ownerIdFromPhoto)
-
 	if photoOwnerId != ownerIdFromPhoto {
 		http.Error(w, database.ErrPageNotFound.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	fmt.Println("fino a qui tutto bene")
 	commentList, err := rt.db.GetCommentList(photoId)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)

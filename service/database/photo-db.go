@@ -107,8 +107,11 @@ func (db *appdbimpl) GetUserPhotos(username string) ([]components.Photo, error) 
 
 	for photoRows.Next() {
 		var photo components.Photo
-		photoRows.Scan(&photo.IdPhoto, &photo.Username, &photo.UploadDataTime, &photo.PhotoBytes)
-		photoList = append(photoList,photo)
+		err = photoRows.Scan(&photo.IdPhoto, &photo.Username, &photo.UploadDataTime, &photo.PhotoBytes)
+		if err != nil {
+			return photoList, err
+		}
+		photoList = append(photoList, photo)
 	}
 
 	return photoList, nil

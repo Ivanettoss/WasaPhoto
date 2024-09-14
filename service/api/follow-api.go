@@ -11,7 +11,7 @@ import (
 
 func (rt *_router) followUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 
-	//authenticate the user
+	// authenticate the user
 
 	user, err := rt.UserAuthentication("u_name", w, r, ps)
 
@@ -22,7 +22,7 @@ func (rt *_router) followUser(w http.ResponseWriter, r *http.Request, ps httprou
 
 	uToFollow := ps.ByName("name_to_follow")
 
-	//get the user to follow from the username
+	// get the user to follow from the username
 	id, err := rt.db.GetId(uToFollow)
 
 	if err != nil {
@@ -30,7 +30,7 @@ func (rt *_router) followUser(w http.ResponseWriter, r *http.Request, ps httprou
 		return
 	}
 
-	//insert it in db in follow table
+	// insert it in db in follow table
 	err = rt.db.InsertFollow(user.Id, id)
 
 	if err != nil {
@@ -49,7 +49,7 @@ func (rt *_router) followUser(w http.ResponseWriter, r *http.Request, ps httprou
 
 func (rt *_router) unFollowUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 
-	//authenticate the user
+	// authenticate the user
 	user, err := rt.UserAuthentication("u_name", w, r, ps)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusUnauthorized)
@@ -58,7 +58,7 @@ func (rt *_router) unFollowUser(w http.ResponseWriter, r *http.Request, ps httpr
 
 	uToFollow := ps.ByName("name_to_follow")
 
-	//get the user's Id to follow from the username
+	// get the user's Id to follow from the username
 	id, err := rt.db.GetId(uToFollow)
 
 	if err != nil {
@@ -66,7 +66,7 @@ func (rt *_router) unFollowUser(w http.ResponseWriter, r *http.Request, ps httpr
 		return
 	}
 
-	//REMOVE it from follow table
+	// REMOVE it from follow table
 	err = rt.db.DeleteFollow(user.Id, id)
 
 	if err != nil {
@@ -122,6 +122,3 @@ func (rt *_router) getFollowedList(w http.ResponseWriter, r *http.Request, ps ht
 	_ = json.NewEncoder(w).Encode(followedList)
 
 }
-
-
-

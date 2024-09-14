@@ -30,7 +30,10 @@ func (db *appdbimpl) GetBannedList(idUserPerforming int) ([]string, error) {
 
 	for BannedRows.Next() {
 		var name string
-		BannedRows.Scan(&name)
+		err = BannedRows.Scan(&name)
+		if err != nil {
+			return BannedList, err
+		}
 		BannedList = append(BannedList, name)
 	}
 

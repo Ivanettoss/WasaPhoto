@@ -10,7 +10,7 @@ import (
 
 func (rt *_router) banUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 
-	//authenticate the user
+	// authenticate the user
 	user, err := rt.UserAuthentication("u_name", w, r, ps)
 
 	if err != nil {
@@ -20,7 +20,7 @@ func (rt *_router) banUser(w http.ResponseWriter, r *http.Request, ps httprouter
 
 	uToBan := ps.ByName("user_to_ban")
 
-	//get the user's Id to ban from the username
+	// get the user's Id to ban from the username
 	id, err := rt.db.GetId(uToBan)
 
 	if err != nil {
@@ -28,7 +28,7 @@ func (rt *_router) banUser(w http.ResponseWriter, r *http.Request, ps httprouter
 		return
 	}
 
-	//insert it in db in ban table
+	// insert it in db in ban table
 	err = rt.db.InsertBan(user.Id, id)
 
 	if err != nil {
@@ -42,7 +42,7 @@ func (rt *_router) banUser(w http.ResponseWriter, r *http.Request, ps httprouter
 
 func (rt *_router) unBanUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 
-	//authenticate the user
+	// authenticate the user
 	user, err := rt.UserAuthentication("u_name", w, r, ps)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusUnauthorized)
@@ -51,7 +51,7 @@ func (rt *_router) unBanUser(w http.ResponseWriter, r *http.Request, ps httprout
 
 	uToBan := ps.ByName("user_to_ban")
 
-	//get the user to unban from the username
+	// get the user to unban from the username
 	id, err := rt.db.GetId(uToBan)
 
 	if err != nil {
@@ -59,7 +59,7 @@ func (rt *_router) unBanUser(w http.ResponseWriter, r *http.Request, ps httprout
 		return
 	}
 
-	//insert it in db in ban table
+	// insert it in db in ban table
 	err = rt.db.DeleteBan(user.Id, id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -71,7 +71,7 @@ func (rt *_router) unBanUser(w http.ResponseWriter, r *http.Request, ps httprout
 }
 
 func (rt *_router) banList(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
-	//authenticate the user
+	// authenticate the user
 	user, err := rt.UserAuthentication("u_name", w, r, ps)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusUnauthorized)
