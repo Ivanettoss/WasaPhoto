@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"net/http"
 
@@ -45,6 +46,8 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 	// lets build the profile stream
 	var profile components.Profile
 
+	profile.Username = profileOwner
+
 	// get the user photos
 	profile.Photos, err = rt.db.GetUserPhotos(profileOwner)
 	if err != nil {
@@ -87,6 +90,7 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 		return
 	}
 
+	fmt.Println("profile username", profile.Username)
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK) // 200
 

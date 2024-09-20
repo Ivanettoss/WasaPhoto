@@ -30,7 +30,7 @@
             this.errormsg = e.toString();
           }
         }
-		           },
+		           }
              }
             }
 
@@ -40,7 +40,7 @@
     <head> 
         <title>Log in </title>
     </head>
-
+ 
     <div class="blurred-box">
        <div class="user-login-box">
         <span class="user-icon"></span>
@@ -57,21 +57,20 @@
 <style>
 
 /* CSS which you need for blurred box */
-body {
-  background-repeat: no-repeat;
+body{
   background-attachment: fixed;
   background-size: cover;
-  background-position: top;
   background-image: url("wasaback.jpeg");
   font-family: Arial, Helvetica;
   letter-spacing: 0.02em;
-  font-weight: 400;
   -webkit-font-smoothing: antialiased;
   
   display: flex; /* Aggiungi questa proprietà */
   justify-content: center; /* Centra orizzontalmente */
   align-items: center; /* Centra verticalmente */
   min-height: 100vh; /* Altezza minima pari alla viewport */
+  margin: 0; /* Rimuovi margini */
+  padding: 0; /* Rimuovi padding */
 }
 
 .blurred-box {
@@ -125,7 +124,7 @@ body {
 .user-name{
   margin-top: 15px;
   margin-bottom: 15px;
-  color: white;
+  color: rgb(46, 70, 206);
 }
 
 input.user-password{

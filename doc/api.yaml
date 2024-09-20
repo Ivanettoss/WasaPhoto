@@ -272,7 +272,7 @@ paths:
         required: true
         content:
           application/json:
-            schema : { $ref: "#/components/parameters/u_name" }
+            schema : { $ref: "#/components/schemas/Username" }
       responses:
         "204":
           description: Name set successfully.
