@@ -11,7 +11,8 @@
                 followState:false, 
                 banState: false,
                 photos:[],
-                nPost:0
+                nPost:0,
+                selectedFile:null
 
             }
 
@@ -54,8 +55,58 @@
             }
             return this.myself
 
-        }
+        },
+
+        async doFollow(){
+             let response = await this.$axios.put("/user/" +this.localUser +"/followed/"+this.$route.params.username)
+             this.followState=True
+             this.nFollowers+=1
+        },
+        async unFollow(){
+             let response = await this.$axios.delete("/user/"+this.localUser +"/followed/"+this.$route.params.username)
+             this.followState=false
+             this.nFollowers-=1
+        },
+
+        handleButtonClick() {
+      if (!this.selectedFile) {
+        // Se non c'è nessun file selezionato, apri il file picker
+        this.$refs.fileInput.click();
+        console.log("ho pickato la foto")
+      } else {
+        // Se c'è un file selezionato, caricalo
+        this.uploadPic();
+      }
     },
+       handleFileSelect(event) {
+      const file = event.target.files[0];
+      console.log("sto nell'handler")
+      if (file) {
+        this.selectedFile = file;
+        console.log("selected file:", file.name);
+      }
+    },
+    
+    async uploadPic() {
+      if (!this.selectedFile) {
+        console.error("Nessun file selezioato.");
+        this.errormsg = "Please select a file to upload."
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("file", this.selectedFile);
+
+      try {
+        let response = await this.$axios.post( "/user/"+this.localUser+"/upload",formData);
+        this.nPost += 1;
+        console.log("Upload completato");
+        this.selectedFile = null; // Resetta lo stato dopo l'upload
+      } catch (error) {
+        console.error("Errore durante l'upload:", error);
+      }
+    },
+  },
      mounted(){
             this.buildProfile()
         }
@@ -68,6 +119,11 @@
 <header class="header">
     <a class="logo">WasaPhoto</a>
     <nav class="navbar">
+        <input id="searchForm" type="text"
+        placeholder="Search users..."
+        v-model="searchQuery" 
+        @keyup.enter="searchUsers"  
+      />
         <a id="menubu">Home</a>
         <a id="menubu">Profile</a>
         <a id="menubu">Settings</a>
@@ -79,8 +135,10 @@
         </div>
         <div class="profile-info">
             <div class="username">{{ username }}
-            <button v-if="mySelf()"  class="buttonsDynamic" >Upload</button>
-            <button v-else class="buttonsDynamic">Follow</button>
+            <input type="file" accept="image/*"  style="display: none" ref="fileInput" @change="handleFileSelect">
+            <button v-if="mySelf()"  class="buttonsDynamic" @click="handleButtonClick">  {{ selectedFile ? 'Upload' : 'Choose an image' }} </button>
+            <button v-else-if="followState" class="buttonsDynamic" @click="unFollow()"> unfollow</button>
+            <button v-else-if="!followState" class="buttonsDynamic" @click="doFollow()"> Follow</button>
             </div>
             
             
@@ -142,13 +200,19 @@
     font-weight:500;
 }
 
-.navbar a{
+.navbar a,p{
     font-size :15px;
     font-weight: 300;
     margin-left: 50px;
     margin-right:30px;
 }
-
+#searchForm{
+    background-color:transparent;
+    border: none;
+    border-bottom: 2px solid whitesmoke;
+    outline: none;
+    color:whitesmoke
+}
 #menubu{
     color:whitesmoke
 }

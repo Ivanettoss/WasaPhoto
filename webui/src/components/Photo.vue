@@ -11,7 +11,6 @@ export default{
         }
     },
 
-    props: ['owner','nLikes','nComments',"photo_id","isOwner", "dataUpload",], 
 
     methods:{
         async loadPhoto(){
