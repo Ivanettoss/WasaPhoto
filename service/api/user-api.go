@@ -17,13 +17,11 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 	profileOwner := ps.ByName("u_name")
 
 	// get the id of the user performing
-	token, err := GetBearerToken(r.Header.Get("Authorization"))
+	userPerformingId, err := GetBearerToken(r.Header.Get("Authorization"))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusUnauthorized)
 		return
 	}
-
-	userPerformingId := token
 
 	// get the profile owner id
 	profileOwnerId, err := rt.db.GetId(profileOwner)
@@ -31,6 +29,7 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+	fmt.Println("prof id", profileOwnerId)
 
 	bancheck, err := rt.db.BanCheck(profileOwnerId, userPerformingId)
 	if bancheck != false {
@@ -96,5 +95,37 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 
 	// return the user profile
 	_ = json.NewEncoder(w).Encode(profile)
+
+}
+
+func (rt *_router) setMyUserName(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
+
+	var new_username components.Username
+
+	// authenticate the user performing
+	user, err := rt.UserAuthentication("u_name", w, r, ps)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
+
+	//  decode the new username form the body
+	err = json.NewDecoder(r.Body).Decode(&new_username)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
+
+	//update the username
+	err = rt.db.SetUsername(user.Username, new_username.Username)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK) // 200
+
+	_ = json.NewEncoder(w).Encode(new_username)
 
 }

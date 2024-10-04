@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"net/http"
 	"regexp"
 	"strconv"
@@ -33,7 +34,7 @@ func (rt *_router) UserAuthentication(username string, w http.ResponseWriter, r 
 
 	// query per ottenere id di utente user
 	idFromDB, err := rt.db.GetId(uname)
-
+	println("id from db ", idFromDB)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return user, err
@@ -43,7 +44,7 @@ func (rt *_router) UserAuthentication(username string, w http.ResponseWriter, r 
 
 	// estraggo il token id dal barer
 	token, err := GetBearerToken(authString)
-
+	println("token ", token)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 
@@ -55,7 +56,7 @@ func (rt *_router) UserAuthentication(username string, w http.ResponseWriter, r 
 
 		user.Id = idFromDB
 		user.Username = uname
-
+		fmt.Println("errore di autenticazione")
 		return user, nil
 
 	} else {

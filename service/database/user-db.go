@@ -49,3 +49,14 @@ func (db *appdbimpl) GetId(user string) (int, error) {
 	return Id, nil
 
 }
+
+func (db *appdbimpl) SetUsername(username string, new_username string) (err error) {
+	_, err = db.c.Exec(`UPDATE User SET Username = ? WHERE  Username = ?`, new_username, username)
+
+	if err != nil {
+		return err
+	}
+
+	return err
+
+}

@@ -26,6 +26,10 @@ func (db *appdbimpl) GetBannedList(idUserPerforming int) ([]string, error) {
 	FROM Ban, User
 	WHERE Ban.IdUserBanned=User.IdUser and  Ban.IdUser=? `, idUserPerforming)
 
+	if err != nil {
+		return BannedList, err
+	}
+
 	defer BannedRows.Close()
 
 	for BannedRows.Next() {

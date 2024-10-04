@@ -24,7 +24,11 @@ func (db *appdbimpl) GetFollowersList(idUser int) ([]string, error) {
 	FollowerRows, err := db.c.Query(`
 	SELECT Username
 	FROM Follow, User
-	WHERE Follow.IdUser=User.IdUser and  Follow.IdUserFollowed=? `, idUser)
+	WHERE Follow.IdUserFollowed=? `, idUser)
+
+	if err != nil {
+		return FollowersList, err
+	}
 
 	defer FollowerRows.Close()
 
@@ -48,7 +52,11 @@ func (db *appdbimpl) GetFollowedList(idUser int) ([]string, error) {
 	FollowerRows, err := db.c.Query(`
 	SELECT Username
 	FROM Follow, User
-	WHERE Follow.IdUserFollowed=User.IdUser and  Follow.IdUser=? `, idUser)
+	WHERE Follow.IdUser=? `, idUser)
+
+	if err != nil {
+		return FollowersList, err
+	}
 
 	defer FollowerRows.Close()
 
@@ -69,9 +77,9 @@ func (db *appdbimpl) GetFollowersNumber(idUser int) (int, error) {
 
 	var followersNumber int
 	err := db.c.QueryRow(`
-	SELECT COUNT(Username)
-	FROM Follow, User
-	WHERE Follow.IdUserFollowed=User.IdUser and  Follow.IdUser=? `, idUser).Scan(&followersNumber)
+	SELECT COUNT(*)
+	FROM Follow
+	WHERE  Follow.IdUserFollowed=? `, idUser).Scan(&followersNumber)
 
 	return followersNumber, err
 }
@@ -79,9 +87,9 @@ func (db *appdbimpl) GetFollowersNumber(idUser int) (int, error) {
 func (db *appdbimpl) GetFollowedNumber(idUser int) (int, error) {
 	var followedNumber int
 	err := db.c.QueryRow(`
-	SELECT COUNT(Username)
-	FROM Follow, User
-	WHERE Follow.IdUserFollowed=User.IdUser and  Follow.IdUser=? `, idUser).Scan(&followedNumber)
+	SELECT COUNT(*)
+	FROM Follow
+	WHERE Follow.IdUser=? `, idUser).Scan(&followedNumber)
 
 	return followedNumber, err
 }

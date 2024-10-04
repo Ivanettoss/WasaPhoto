@@ -42,6 +42,8 @@ func (rt *_router) Handler() http.Handler {
 
 	rt.router.GET("/user/:u_name/stream", rt.wrap(rt.getStream))
 
+	rt.router.PUT("/user/:u_name/set_username", rt.wrap(rt.setMyUserName))
+
 	// Special routes
 	rt.router.GET("/liveness", rt.liveness)
 
