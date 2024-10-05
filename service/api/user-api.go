@@ -131,9 +131,11 @@ func (rt *_router) setMyUserName(w http.ResponseWriter, r *http.Request, ps http
 }
 
 func (rt *_router) getUsersList(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
-
+	myName := ps.ByName("u_name")
+	var usersFound components.Ulist
 	userToFind := ps.ByName("user_to_find")
-	usersFound, err := rt.db.SearchUsername(userToFind)
+	fmt.Println((userToFind))
+	usersFound, err := rt.db.SearchUsername(myName, userToFind)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)

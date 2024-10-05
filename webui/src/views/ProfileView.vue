@@ -21,7 +21,10 @@
                 showSettings: false,
 
                 showPopup: false, // Controlla la visibilità del popup
-                newUsername: ''   // Nuovo nome utente
+                newUsername: '' ,  // Nuovo nome utente
+
+                searchQuery: '',
+                users:[]
 
             }
 
@@ -75,12 +78,20 @@
             }
 
 
-        },async searchUsers() {
-          
-
         },
 
-
+        async searchUsers(searchQuery) {
+          this.users = []; // Resetta la lista se il campo è vuoto
+  
+              try{
+            let response=await this.$axios.get("/user/"+this.localUser+"/searchusers/"+this.searchQuery)
+             for (let i = 0; i < response.data.userlist.length; i++){    
+                    this.users.push(response.data.userlist[i])   
+                }
+          }catch(e){
+              this.errormsg = e.toString();
+          }
+        },
 
         async doLogOut() {
 			localStorage.removeItem("token")
@@ -218,12 +229,25 @@
 <header class="header">
     <a class="logo">WasaPhoto</a>
     <nav class="navbar">
+      <div class="search-container">
+
         <input id="searchForm" type="text"
         placeholder="Search users..."
         v-model="searchQuery" 
-        @keyup.enter="searchUsers"  
+        @keyup.enter="searchUsers(searchQuery)"  
       />	
-      <button class="search-button" @click="searchusers()"></button>
+      <button class="search-button" @click="searchUsers(searchQuery)"></button>
+
+      <div v-if="users.length > 0" class="search-dropdown">
+        <ul>
+          <li v-for="user in users" :key="user.username" >
+            {{ user.username }}
+          </li>
+        </ul>
+      </div>
+  </div>
+
+
         <a  id="menubu">Home</a>
         <a  id="menubu">Profile</a>
         <a  id="menubu" @click="settingsDropdown">Settings</a>
@@ -694,6 +718,37 @@
     background-color: #0056b3;
 }
 
+.search-container {
+  position: relative; /* Ensures dropdown is positioned relative to this container */
+ 
+}
+.search-dropdown {
+  position:relative;
+  background-color: whitesmoke;
+  width: 200px;
+  max-height: 200px;
+  overflow-y: auto;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  top: 100%;           /* Position it right below the input */
+  left: 0;  
+}
+
+.search-dropdown ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  color: cadetblue
+}
+
+.search-dropdown li {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.search-dropdown li:hover {
+  background-color: #f0f0f0;
+}
 
 
 </style>

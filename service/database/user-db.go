@@ -1,6 +1,8 @@
 package database
 
 import (
+	"fmt"
+
 	"git.sapienzaapps.it/fantasticcoffee/fantastic-coffee-decaffeinated/service/api/components"
 )
 
@@ -61,13 +63,13 @@ func (db *appdbimpl) SetUsername(username string, new_username string) (err erro
 
 }
 
-func (db *appdbimpl) SearchUsername(username string) ([]string, error) {
-	var users []string
+func (db *appdbimpl) SearchUsername(myName string, username string) (components.Ulist, error) {
+	var users components.Ulist
 
 	userRows, err := db.c.Query(`
 		SELECT Username
 		FROM User
-		WHERE User.Username LIKE '%'||?||'%'`, username)
+		WHERE User.Username LIKE '%'||?||'%' and User.Username!=?`, username,myName)
 	if err != nil {
 		return users, err
 	}
@@ -75,14 +77,17 @@ func (db *appdbimpl) SearchUsername(username string) ([]string, error) {
 	defer userRows.Close()
 
 	for userRows.Next() {
-		var name string
-		err = userRows.Scan(&name)
+		var name components.Username
+		err = userRows.Scan(&name.Username)
+
 		if err != nil {
+			fmt.Println("errore")
 			return users, err
 		}
-		users = append(users, name)
-	}
 
+		users.UsersList = append(users.UsersList, name)
+	}
+	fmt.Println("lista di utenti trovata", users)
 	// format the list
 	return users, err
 
