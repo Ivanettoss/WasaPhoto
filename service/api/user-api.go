@@ -109,7 +109,7 @@ func (rt *_router) setMyUserName(w http.ResponseWriter, r *http.Request, ps http
 		return
 	}
 
-	//  decode the new username form the body
+	//  decode the new username from the body
 	err = json.NewDecoder(r.Body).Decode(&new_username)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusUnauthorized)
@@ -127,5 +127,19 @@ func (rt *_router) setMyUserName(w http.ResponseWriter, r *http.Request, ps http
 	w.WriteHeader(http.StatusOK) // 200
 
 	_ = json.NewEncoder(w).Encode(new_username)
+
+}
+
+func (rt *_router) getUsersList(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
+
+	userToFind := ps.ByName("user_to_find")
+	usersFound, err := rt.db.SearchUsername(userToFind)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	_ = json.NewEncoder(w).Encode(usersFound)
 
 }

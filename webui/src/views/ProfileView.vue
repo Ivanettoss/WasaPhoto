@@ -33,9 +33,10 @@
                 console.log(response)
                 console.log("ciao, guarda photos", response.data.photos)
                 this.username=response.data.username
-
+                this.photos=[]
                 for (let i = 0; i < response.data.photos.length; i++){
-                    this.photos.push(response.data.photos[i])
+                    console.log(response.data.photos[i])
+                    this.photos.push(response.data.photos[i])   
                 }
                 this.nFollowers=response.data.nfollower
                 this.nFollowing=response.data.nfollowed
@@ -74,7 +75,13 @@
             }
 
 
+        },async searchUsers() {
+          
+
         },
+
+
+
         async doLogOut() {
 			localStorage.removeItem("token")
 			localStorage.removeItem("username")
@@ -121,6 +128,7 @@
                     this.username=response.data.username
                     this.showPopup = false; // Chiude il popup dopo il salvataggio
                     this.newUsername = ''; // Resetta il campo di input
+                    localStorage.setItem('username', user.username);
                     this.$router.push({path: '/profile/'+this.username})
                 } catch (e)
                 {
@@ -183,6 +191,20 @@
         console.error("Errore durante l'upload:", error);
       }
     },
+    async deletePic(idPhotoToDelete){
+    try{
+    console.log(idPhotoToDelete)
+    let responde=await this.$axios.delete( "/user/"+this.localUser+"/photo/"+ idPhotoToDelete,{
+          headers: {
+            Authorization: this.token
+          }
+        });
+        console.log("delete eseguito")
+        this.buildProfile()
+    }catch(e){
+    this.errormsg = e.toString();
+  }},
+
   },
      mounted(){
             this.buildProfile()
@@ -200,7 +222,8 @@
         placeholder="Search users..."
         v-model="searchQuery" 
         @keyup.enter="searchUsers"  
-      />
+      />	
+      <button class="search-button" @click="searchusers()"></button>
         <a  id="menubu">Home</a>
         <a  id="menubu">Profile</a>
         <a  id="menubu" @click="settingsDropdown">Settings</a>
@@ -260,16 +283,19 @@
 
 
 
-    <ul class="card-list">
+  <ul class="card-list">
 	
-	<li class="card" v-for="photo in this.photos" :key="photo.IdPhoto">
+	<li class="card" v-for="photo in this.photos" :key="photo.idphoto">
 		<div class="card-image"  >
 			 <img :src="photo.photobytes">
 		</div>
 		<div class="card-description"  target="_blank">
-			
+      {{ photo.nlikes }}
 			<button class="custom-button"></button>
-            <button class="custom-button2" @click="toggleComments()"></button>
+      {{ photo.ncomments }}
+      <button class="custom-button2" @click="toggleComments()"></button>
+
+      <button class="custom-button3" @click="deletePic( photo.idphoto)"></button>
                
 		</div>
 
@@ -394,9 +420,28 @@
 	min-height: 20rem; /* layout hack */
 	background-color : rgba(255, 255, 255, 0.5);
 	background-size: cover;
-    display: block;
+  display: block;
 	width: 100%;
+  width: 100%;
+  height: 300px; /* Imposta un'altezza fissa per la carta */
+  overflow: hidden; /* Nasconde le parti in eccesso dell'immagine */
+  position: relative;
 }
+
+  .card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* L'immagine si adatta al contenitore mantenendo le proporzioni */
+}
+
+.lNc{
+  display: flex; /* Mantiene i pulsanti su una linea orizzontale */
+    gap: 10px; /* Spazio tra il cuore e il commento */
+    justify-content: flex-start; /* Sposta i pulsanti cuore e commento verso sinistra */
+}
+
+
+
 
 
 
@@ -412,7 +457,6 @@
 
 
 .card-list {
-	display: inline;
 	margin: 1rem auto;
 	padding: 0;
 	font-size: 0;
@@ -420,8 +464,9 @@
 	list-style: none;
 }
 
+
 .card {
-    background-color : rgba(255, 255, 255, 0.5);
+   background-color : rgba(255, 255, 255, 0.5);
 	display: inline-block;
 	width: 90%;
 	max-width: 20rem;
@@ -439,8 +484,11 @@
 }
 
 .card-description {
-	display: block;
-	padding: 1em 0.5em;
+ display: flex;
+  justify-content: space-between; /* Distribuisce i pulsanti su entrambi i lati */
+  align-items: center;
+    padding: 15px 20px 5px;
+
 	
 }
 
@@ -448,23 +496,48 @@
 .custom-button{
     background-image: url("heart.png"); /* URL dell'immagine */
     background-size: cover; /* L'immagine copre l'intero pulsante */
-    width: 40px; /* Imposta la larghezza */
-    height: 40px; /* Imposta l'altezza */
-    border: none; /* Rimuove il bordo */
-    cursor: pointer; /* Cambia il cursore quando passa sopra il pulsante */
-    background-color: rgba(255, 255, 255, 0);
-}
-
-.custom-button2{
-    background-image: url("speech-bubble.png"); /* URL dell'immagine */
-    background-size: cover; /* L'immagine copre l'intero pulsante */
     width: 30px; /* Imposta la larghezza */
     height: 30px; /* Imposta l'altezza */
     border: none; /* Rimuove il bordo */
     cursor: pointer; /* Cambia il cursore quando passa sopra il pulsante */
     background-color: rgba(255, 255, 255, 0);
+    margin-right: auto;
 }
 
+.custom-button2{
+    background-image: url("speech-bubble.png"); /* URL dell'immagine */
+    background-size: cover; /* L'immagine copre l'intero pulsante */
+    width: 25px; /* Imposta la larghezza */
+    height: 25px; /* Imposta l'altezza */
+    border: none; /* Rimuove il bordo */
+    cursor: pointer; /* Cambia il cursore quando passa sopra il pulsante */
+    background-color: rgba(255, 255, 255, 0);
+    margin-right: auto;
+}
+
+.custom-button3{
+    background-image: url("bin.png"); /* URL dell'immagine */
+    background-size: cover; /* L'immagine copre l'intero pulsante */
+    width: 25px; /* Imposta la larghezza */
+    height: 25px; /* Imposta l'altezza */
+    border: none; /* Rimuove il bordo */
+    cursor: pointer; /* Cambia il cursore quando passa sopra il pulsante */
+    margin-left: auto;
+    background-color: rgba(255, 255, 255, 0);
+}
+.search-button{
+    background-image: url("search.png"); /* URL dell'immagine */
+    background-size: cover; /* L'immagine copre l'intero pulsante */
+    width: 15px; /* Imposta la larghezza */
+    height: 15px; /* Imposta l'altezza */
+    border: none; /* Rimuove il bordo */
+    cursor: pointer; /* Cambia il cursore quando passa sopra il pulsante */
+    margin-left: auto;
+    background-color: rgba(255, 255, 255, 0);
+}
+.search-button:hover {
+     transform: scale(1.5)
+}
 .custom-button:hover {
     background-color: rgba(255, 255, 255, 0.5)
 	

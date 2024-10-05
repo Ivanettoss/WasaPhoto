@@ -60,3 +60,30 @@ func (db *appdbimpl) SetUsername(username string, new_username string) (err erro
 	return err
 
 }
+
+func (db *appdbimpl) SearchUsername(username string) ([]string, error) {
+	var users []string
+
+	userRows, err := db.c.Query(`
+		SELECT Username
+		FROM User
+		WHERE User.Username LIKE '%'||?||'%'`, username)
+	if err != nil {
+		return users, err
+	}
+
+	defer userRows.Close()
+
+	for userRows.Next() {
+		var name string
+		err = userRows.Scan(&name)
+		if err != nil {
+			return users, err
+		}
+		users = append(users, name)
+	}
+
+	// format the list
+	return users, err
+
+}

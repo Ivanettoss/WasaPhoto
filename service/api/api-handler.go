@@ -37,12 +37,18 @@ func (rt *_router) Handler() http.Handler {
 	// show comments
 	rt.router.GET("/user/:u_name/photo/:photo_id/comments", rt.wrap(rt.getComments))
 
-	// user
+	//  user
+	//  get a user profile
 	rt.router.GET("/searchuser/:u_name", rt.wrap(rt.getUserProfile))
 
+	//  get a user stream
 	rt.router.GET("/user/:u_name/stream", rt.wrap(rt.getStream))
 
+	//  set a new username (only for urself)
 	rt.router.PUT("/user/:u_name/set_username", rt.wrap(rt.setMyUserName))
+
+	//  get a list of users
+	rt.router.GET("/user/:u_name/searchusers/:user_to_find", rt.wrap(rt.getUsersList))
 
 	// Special routes
 	rt.router.GET("/liveness", rt.liveness)

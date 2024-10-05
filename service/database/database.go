@@ -79,6 +79,7 @@ type AppDatabase interface {
 	GetUserPhotos(username string) ([]components.Photo, error)
 	GetStream(userPerformingId int, userPerformingName string) (components.Stream, error)
 	SetUsername(username string, new_username string) (err error)
+	SearchUsername(username string) ([]string, error)
 	Ping() error
 }
 
