@@ -201,7 +201,7 @@ paths:
 
 
 
-  /user/{u_name}/ban_list:
+  /user/{u_name}/banned_list:
     parameters:
     - { $ref: "#/components/parameters/u_name" }
 

@@ -3,7 +3,6 @@ package database
 import (
 	"database/sql"
 	"errors"
-	"fmt"
 )
 
 func (db *appdbimpl) InsertLike(idUserLike int, idPhoto int) error {

@@ -21,6 +21,11 @@ func (rt *_router) likePhoto(w http.ResponseWriter, r *http.Request, ps httprout
 	// id of the photo to like converted in int
 	idPhotoToLike, err := strconv.Atoi(ps.ByName("photo_id"))
 
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
 	// id of the photo owner
 	userOwnerId, err := rt.db.GetId(ps.ByName("u_name"))
 
@@ -77,6 +82,10 @@ func (rt *_router) unlikePhoto(w http.ResponseWriter, r *http.Request, ps httpro
 
 	// id of the photo to like converted in int
 	idPhotoToLike, err := strconv.Atoi(ps.ByName("photo_id"))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 
 	// id of the photo owner
 	userOwnerId, err := rt.db.GetId(ps.ByName("u_name"))

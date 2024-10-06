@@ -69,7 +69,7 @@ func CheckAuth(user components.User, authRaw string) error {
 		return err
 	}
 
-	if int(user.Id) != token {
+	if user.Id != token {
 		return err
 	}
 

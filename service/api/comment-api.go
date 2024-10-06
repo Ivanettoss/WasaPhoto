@@ -27,6 +27,10 @@ func (rt *_router) commentPhoto(w http.ResponseWriter, r *http.Request, ps httpr
 
 	// get the id from the db linked to the username
 	idFromDatabase, err := rt.db.GetId(userNameFromComment)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 
 	// check if the ids match
 	if idFromDatabase != comment.User.Id {
