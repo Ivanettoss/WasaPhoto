@@ -29,7 +29,6 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	fmt.Println("prof id", profileOwnerId)
 
 	bancheck, err := rt.db.BanCheck(profileOwnerId, userPerformingId)
 	if bancheck != false {
@@ -89,7 +88,6 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 		return
 	}
 
-	fmt.Println("profile username", profile.Username)
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK) // 200
 
@@ -116,7 +114,7 @@ func (rt *_router) setMyUserName(w http.ResponseWriter, r *http.Request, ps http
 		return
 	}
 
-	//update the username
+	//  update the username
 	err = rt.db.SetUsername(user.Username, new_username.Username)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -134,7 +132,6 @@ func (rt *_router) getUsersList(w http.ResponseWriter, r *http.Request, ps httpr
 	myName := ps.ByName("u_name")
 	var usersFound components.Ulist
 	userToFind := ps.ByName("user_to_find")
-	fmt.Println((userToFind))
 	usersFound, err := rt.db.SearchUsername(myName, userToFind)
 
 	if err != nil {

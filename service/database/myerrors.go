@@ -17,5 +17,3 @@ var ErrLikeNotFound = errors.New("The like you are looking for was not found")
 var ErrCommNotFound = errors.New("The comment you are looking for was not found")
 
 var ErrUserBanned = errors.New("User banned")
-
-

@@ -53,10 +53,10 @@ type AppDatabase interface {
 	BanCheck(OwnerId int, userPerforming int) (bool, error)
 
 	InsertLike(idUserLike int, idPhoto int) error
-	GetLike(idUserPerforming int, idPhoto int) (error)
+	GetLike(idUserPerforming int, idPhoto int) error
 	DeleteLike(idUserPerforming int, idPhoto int) error
 	CountLikes(idPhoto int) (int, error)
-	CheckLike(idUserPerforming int, idPhoto int) (bool,error)
+	CheckLike(idUserPerforming int, idPhoto int) (bool, error)
 
 	InsertComment(comment components.Comment) error
 	GetComment(commentId int) (components.Comment, error)
@@ -77,7 +77,7 @@ type AppDatabase interface {
 	GetPhoto(photoId int) (components.Photo, error)
 	GetPhotoOwnerId(photoId int) (int, error)
 	GetPostedPhotoNumber(idUser int) (int, error)
-	GetUserPhotos(idUserPerforming int,username string) ([]components.Photo, error)
+	GetUserPhotos(idUserPerforming int, username string) ([]components.Photo, error)
 	GetStream(userPerformingId int, userPerformingName string) (components.Stream, error)
 	SetUsername(username string, new_username string) (err error)
 	SearchUsername(myName string, username string) (components.Ulist, error)

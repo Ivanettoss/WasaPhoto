@@ -77,14 +77,14 @@ func (db *appdbimpl) CheckLike(idUserPerforming int, idPhoto int) (bool, error) 
 	WHERE IdPhoto=? and IdUser=?`, idPhoto, idUserPerforming).Scan(&temp)
 
 	if err == sql.ErrNoRows {
-		fmt.Println("1nor")
+
 		return false, nil
 
 	} else if err != nil {
-		fmt.Println("2")
+
 		return false, ErrLikeNotFound
 	}
-	fmt.Println(temp)
+
 	// Se abbiamo trovato una riga, restituisci true
 	return true, nil
 }

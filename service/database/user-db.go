@@ -69,7 +69,7 @@ func (db *appdbimpl) SearchUsername(myName string, username string) (components.
 	userRows, err := db.c.Query(`
 		SELECT Username
 		FROM User
-		WHERE User.Username LIKE '%'||?||'%' and User.Username!=?`, username,myName)
+		WHERE User.Username LIKE '%'||?||'%' and User.Username!=?`, username, myName)
 	if err != nil {
 		return users, err
 	}
@@ -81,13 +81,13 @@ func (db *appdbimpl) SearchUsername(myName string, username string) (components.
 		err = userRows.Scan(&name.Username)
 
 		if err != nil {
-			fmt.Println("errore")
+
 			return users, err
 		}
 
 		users.UsersList = append(users.UsersList, name)
 	}
-	fmt.Println("lista di utenti trovata", users)
+
 	// format the list
 	return users, err
 

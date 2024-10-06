@@ -43,6 +43,7 @@
                 this.photos=[]
                 for (let i = 0; i < response.data.photos.length; i++){
                     console.log(response.data.photos[i])
+                    response.data.photos[i].commentsOpen=false
                     this.photos.push(response.data.photos[i])   
                 }
                 this.nFollowers=response.data.nfollower
@@ -136,8 +137,8 @@
         },
 
 
-        toggleComments() {
-      this.showComments = !this.showComments;
+        toggleComments(photo) {
+      photo.commentsOpen = !photo.commentsOpen;
     },
 
     settingsDropdown() {
@@ -333,14 +334,14 @@
 			<button v-if="!photo.isliked" class="custom-button" @click="doLike(photo)"></button>
       <button v-if="photo.isliked" class="custom-buttonLiked" @click="doUnLike(photo)"></button>
       {{ photo.ncomments }}
-      <button class="custom-button2" @click="toggleComments()"></button>
+      <button class="custom-button2" @click="toggleComments(photo)"></button>
 
       <button class="custom-button3" @click="deletePic(photo.idphoto)"></button>
                
 		</div>
 
         <!-- Box dei commenti nascosto sotto la foto -->
-      <div v-if="showComments" class="comment-box">
+      <div v-if="photo.commentsOpen" class="comment-box">
         <ul>
           <li v-for="comment in comments" :key="comment.id">
            autore: {{ comment.text }}

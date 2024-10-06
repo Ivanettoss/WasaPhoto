@@ -116,13 +116,12 @@ func (db *appdbimpl) GetUserPhotos(idUserPerforming int, username string) ([]com
 		if err != nil {
 			return photoList, ErrPhotoNotFound
 		}
-		fmt.Println("iduserperf",idUserPerforming)
-		fmt.Println("idphoto",photo.IdPhoto)
+
 		photo.IsLiked, err = db.CheckLike(idUserPerforming, photo.IdPhoto)
 		if err != nil {
 			return photoList, err
 		}
-		fmt.Println("isliked",photo.IsLiked)
+
 		photoList = append(photoList, photo)
 	}
 

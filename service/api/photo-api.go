@@ -24,7 +24,6 @@ func (rt *_router) uploadPhoto(w http.ResponseWriter, r *http.Request, ps httpro
 		return
 	}
 
-	fmt.Println("username", user.Username)
 	// rememeber to manage the user empty(ID 0 and username "" problem)
 	var photo components.Photo
 
@@ -33,7 +32,7 @@ func (rt *_router) uploadPhoto(w http.ResponseWriter, r *http.Request, ps httpro
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
-		fmt.Println("ciao")
+
 		return
 	}
 
