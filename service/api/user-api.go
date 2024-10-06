@@ -48,7 +48,7 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 	profile.Username = profileOwner
 
 	// get the user photos
-	profile.Photos, err = rt.db.GetUserPhotos(profileOwner)
+	profile.Photos, err = rt.db.GetUserPhotos(userPerformingId, profileOwner)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

@@ -24,7 +24,8 @@
                 newUsername: '' ,  // Nuovo nome utente
 
                 searchQuery: '',
-                users:[]
+                users:[],
+               
 
             }
 
@@ -32,9 +33,12 @@
         methods:{
         async buildProfile(){
             try{
-                let response = await this.$axios.get("/searchuser/" + this.$route.params.username)
-                console.log(response)
-                console.log("ciao, guarda photos", response.data.photos)
+                let response = await this.$axios.get("/searchuser/" + this.$route.params.username,{
+                  headers:{
+                    Authorization:this.token
+                  }
+                })
+               
                 this.username=response.data.username
                 this.photos=[]
                 for (let i = 0; i < response.data.photos.length; i++){
@@ -59,27 +63,39 @@
         },
 
 
-        async doLike(){
+        async doLike(photo){
+            
             try{
+
+                let response=await this.$axios.put("/user/"+photo.username+"/photo/"+photo.idphoto+"/like/"+this.localUser, {},{ 
+                  headers: {
+            "Authorization" : this.token
+          }})
 
             }
             catch(e){
                 this.errormsg = e.toString();
+                console.log(e)
             }
-
+          photo.isliked=true
+          photo.nlikes+=1
 
         },
-        async doUnLike(){
-            try{
+        async doUnLike(photo){
 
+           try{
+                let response=await this.$axios.delete("/user/"+photo.username+"/photo/"+photo.idphoto+"/like/"+this.localUser, { 
+                  headers: {
+            "Authorization" : this.token
+          }})
             }
             catch(e){
                 this.errormsg = e.toString();
             }
-
-
+        photo.isliked=false
+        photo.nlikes-=1
         },
-
+           
         async searchUsers(searchQuery) {
           this.users = []; // Resetta la lista se il campo è vuoto
   
@@ -133,7 +149,7 @@
                     // Aggiungi la logica per cambiare il nome utente, ad esempio:
                     let response= await this.$axios.put("/user/" +this.localUser +"/set_username",{ "username": this.newUsername},
                     { headers: {
-            Authorization: this.token
+            "Authorization" : this.token
           }})
                     console.log(response)
                     this.username=response.data.username
@@ -204,17 +220,16 @@
     },
     async deletePic(idPhotoToDelete){
     try{
-    console.log(idPhotoToDelete)
-    let responde=await this.$axios.delete( "/user/"+this.localUser+"/photo/"+ idPhotoToDelete,{
+    let response=await this.$axios.delete( "/user/"+this.localUser+"/photo/"+ idPhotoToDelete,{
           headers: {
-            Authorization: this.token
+            "Authorization" : this.token
           }
         });
         console.log("delete eseguito")
         this.buildProfile()
     }catch(e){
     this.errormsg = e.toString();
-  }},
+  }}
 
   },
      mounted(){
@@ -315,11 +330,12 @@
 		</div>
 		<div class="card-description"  target="_blank">
       {{ photo.nlikes }}
-			<button class="custom-button"></button>
+			<button v-if="!photo.isliked" class="custom-button" @click="doLike(photo)"></button>
+      <button v-if="photo.isliked" class="custom-buttonLiked" @click="doUnLike(photo)"></button>
       {{ photo.ncomments }}
       <button class="custom-button2" @click="toggleComments()"></button>
 
-      <button class="custom-button3" @click="deletePic( photo.idphoto)"></button>
+      <button class="custom-button3" @click="deletePic(photo.idphoto)"></button>
                
 		</div>
 
@@ -527,6 +543,16 @@
     background-color: rgba(255, 255, 255, 0);
     margin-right: auto;
 }
+.custom-buttonLiked{
+  background-image: url("heart_filled.png"); /* URL dell'immagine */
+    background-size: cover; /* L'immagine copre l'intero pulsante */
+    width: 30px; /* Imposta la larghezza */
+    height: 30px; /* Imposta l'altezza */
+    border: none; /* Rimuove il bordo */
+    cursor: pointer; /* Cambia il cursore quando passa sopra il pulsante */
+    background-color: rgba(255, 255, 255, 0);
+    margin-right: auto;
+}
 
 .custom-button2{
     background-image: url("speech-bubble.png"); /* URL dell'immagine */
@@ -562,10 +588,7 @@
 .search-button:hover {
      transform: scale(1.5)
 }
-.custom-button:hover {
-    background-color: rgba(255, 255, 255, 0.5)
-	
-}
+
 
 .buttonsDynamic{
             display: inline-block;

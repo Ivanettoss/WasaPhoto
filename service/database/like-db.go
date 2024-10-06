@@ -3,6 +3,7 @@ package database
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 )
 
 func (db *appdbimpl) InsertLike(idUserLike int, idPhoto int) error {
@@ -19,7 +20,6 @@ func (db *appdbimpl) InsertLike(idUserLike int, idPhoto int) error {
 }
 
 func (db *appdbimpl) DeleteLike(idUserPerforming int, idPhoto int) error {
-
 	err := db.GetLike(idUserPerforming, idPhoto)
 	if err != nil {
 		return err
@@ -60,11 +60,31 @@ func (db *appdbimpl) CountLikes(idPhoto int) (int, error) {
 	err := db.c.QueryRow(`
 	SELECT COUNT(*)
 	FROM Like
-	WHERE photo?`, idPhoto).Scan(&nlikes)
+	WHERE IdPhoto=?`, idPhoto).Scan(&nlikes)
 
 	if errors.Is(err, sql.ErrNoRows) {
 		return nlikes, ErrPhotoNotFound
 	}
 
 	return nlikes, err
+}
+
+func (db *appdbimpl) CheckLike(idUserPerforming int, idPhoto int) (bool, error) {
+	var temp int
+	err := db.c.QueryRow(`
+	SELECT IdUser
+	FROM Like
+	WHERE IdPhoto=? and IdUser=?`, idPhoto, idUserPerforming).Scan(&temp)
+
+	if err == sql.ErrNoRows {
+		fmt.Println("1nor")
+		return false, nil
+
+	} else if err != nil {
+		fmt.Println("2")
+		return false, ErrLikeNotFound
+	}
+	fmt.Println(temp)
+	// Se abbiamo trovato una riga, restituisci true
+	return true, nil
 }

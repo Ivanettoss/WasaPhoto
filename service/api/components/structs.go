@@ -10,13 +10,13 @@ type User struct {
 }
 
 type Profile struct {
-	Username    string `json:"username"`
-	Photos		[]Photo `json:"photos"`
-	NFollowers  int    `json:"nfollower"`
-	NFollowed   int    `json:"nfollowed"`
-	NPost       int    `json:"npost"`
-	FollowState bool   `json:"followstate"`
-	BanState    bool   `json:"banstate"`
+	Username    string  `json:"username"`
+	Photos      []Photo `json:"photos"`
+	NFollowers  int     `json:"nfollower"`
+	NFollowed   int     `json:"nfollowed"`
+	NPost       int     `json:"npost"`
+	FollowState bool    `json:"followstate"`
+	BanState    bool    `json:"banstate"`
 }
 
 type Photo struct {
@@ -26,6 +26,7 @@ type Photo struct {
 	NLikes         int    `json:"nlikes"`
 	NComments      int    `json:"ncomments"`
 	UploadDataTime string `json:"uploaddatatime"`
+	IsLiked        bool   `json:"isliked"`
 }
 
 type Comment struct {
@@ -37,8 +38,8 @@ type Comment struct {
 }
 
 type Stream struct {
-	Username  string  `json:"username"`
-	Photos []Photo `json:"photos"`
+	Username string  `json:"username"`
+	Photos   []Photo `json:"photos"`
 }
 
 type Ulist struct {

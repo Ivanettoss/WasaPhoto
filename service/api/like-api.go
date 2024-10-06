@@ -51,6 +51,7 @@ func (rt *_router) likePhoto(w http.ResponseWriter, r *http.Request, ps httprout
 	// insert the like
 	err = rt.db.InsertLike(user.Id, idPhotoToLike)
 	if err != nil {
+
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -58,6 +59,7 @@ func (rt *_router) likePhoto(w http.ResponseWriter, r *http.Request, ps httprout
 	// update the like counter
 	photoToLike.NLikes, err = rt.db.CountLikes(idPhotoToLike)
 	if err != nil {
+
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

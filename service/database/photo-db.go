@@ -3,6 +3,7 @@ package database
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 
 	"git.sapienzaapps.it/fantasticcoffee/fantastic-coffee-decaffeinated/service/api/components"
 )
@@ -91,7 +92,7 @@ func (db *appdbimpl) GetPostedPhotoNumber(idUser int) (int, error) {
 	return postNumber, nil
 }
 
-func (db *appdbimpl) GetUserPhotos(username string) ([]components.Photo, error) {
+func (db *appdbimpl) GetUserPhotos(idUserPerforming int, username string) ([]components.Photo, error) {
 	var photoList []components.Photo
 
 	photoRows, err := db.c.Query(`
@@ -111,6 +112,17 @@ func (db *appdbimpl) GetUserPhotos(username string) ([]components.Photo, error) 
 		if err != nil {
 			return photoList, err
 		}
+		photo.NLikes, err = db.CountLikes(photo.IdPhoto)
+		if err != nil {
+			return photoList, ErrPhotoNotFound
+		}
+		fmt.Println("iduserperf",idUserPerforming)
+		fmt.Println("idphoto",photo.IdPhoto)
+		photo.IsLiked, err = db.CheckLike(idUserPerforming, photo.IdPhoto)
+		if err != nil {
+			return photoList, err
+		}
+		fmt.Println("isliked",photo.IsLiked)
 		photoList = append(photoList, photo)
 	}
 
