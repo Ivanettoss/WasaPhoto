@@ -32,6 +32,9 @@
         },
         methods:{
         async buildProfile(){
+            console.log("token",this.token)
+            console.log("localuser",this.localUser)
+            console.log("params",this.$route.params.username)
             try{
                 let response = await this.$axios.get("/searchuser/" + this.$route.params.username,{
                   headers:{
@@ -46,10 +49,11 @@
                     response.data.photos[i].commentsOpen=false
                     this.photos.push(response.data.photos[i])   
                 }
+                //fixa il return a [] e non a null
+                //fixa visibilità follow e defollow e fai funzioni
                 this.nFollowers=response.data.nfollower
                 this.nFollowing=response.data.nfollowed
                 this.nPost=response.data.npost
-
                 if (this.username != localStorage.getItem("username"))
                 {
                     this.followState=response.data.followstate
@@ -190,8 +194,8 @@
          
           for (let i = 0; i < photo.comments.length; i++){ 
                   if(photo.comments[i].idcomment==response.data.idcomment)  
-                    photo.comments.splice(i)
-                    console.log(photo.comments[i].idcomment,response.data.idcomment)
+                    photo.comments.splice(i,1)
+                    
                 }
           photo.comments=photo.comments
           photo.ncomments-=1
@@ -257,7 +261,12 @@
         this.buildProfile()
     }catch(e){
     this.errormsg = e.toString();
-  }}
+  }},
+
+  goToProfile(profileUsername){
+    this.$router.push({path: '/profile/'+profileUsername})
+    this.buildProfile()
+  }
 
   },
      mounted(){
@@ -283,8 +292,8 @@
 
       <div v-if="users.length > 0" class="search-dropdown">
         <ul>
-          <li v-for="user in users" :key="user.username" >
-            {{ user.username }}
+          <li v-for="user in users" :key="user.username" @click="goToProfile(user.username)">
+            {{ user.username }} 
           </li>
         </ul>
       </div>
@@ -334,11 +343,11 @@
                 </div>
                 <div class="stat-item">
                     <span>{{ nFollowing }}</span>
-                    Seguiti
+                    Followed
                 </div>
                 <div class="stat-item">
                     <span>{{ nFollowers }}</span>
-                    Seguaci
+                    Followers
                 </div>
             </div>
         </div>
@@ -372,7 +381,7 @@
         <ul>
           <li v-for="comment in photo.comments" :key="comment.idcomment">
            {{ comment.user.username }}: {{ comment.text }}
-           <button class="custom-buttonDelC" @click="deleteComment(photo,comment.idcomment)"> </button>  
+           <button v-if="comment.user.id==this.token" class="custom-buttonDelC" @click="deleteComment(photo,comment.idcomment)"> </button>  
           </li>
         </ul>
         <textarea v-model="newComment" placeholder="write a comment..."></textarea>
@@ -717,7 +726,7 @@
   left: 0;
   background: cadetblue;
   box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-  z-index: 1;
+ 
 }
 
 .dropdown-content a {
