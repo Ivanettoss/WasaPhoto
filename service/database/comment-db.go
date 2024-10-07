@@ -4,18 +4,19 @@ import (
 	"git.sapienzaapps.it/fantasticcoffee/fantastic-coffee-decaffeinated/service/api/components"
 )
 
-func (db *appdbimpl) InsertComment(comment components.Comment) error {
+func (db *appdbimpl) InsertComment(comment components.Comment) (int, error) {
 
-	_, err := db.c.Exec(`
+	err := db.c.QueryRow(`
 
-	INSERT OR IGNORE INTO Comment(IdUser,IdPhoto,DataTime,Text) 
-		VALUES(?,?,?,?)`,
-		comment.User.Id, comment.IdPhoto, comment.UploadDataTime, comment.Text)
+	INSERT  INTO Comment(IdUser,IdPhoto,DataTime,Text) 
+		VALUES(?,?,?,?) 
+		RETURNING IdComment`,
+		comment.User.Id, comment.IdPhoto, comment.UploadDataTime, comment.Text).Scan(&comment.IdComment)
 
 	if err != nil {
-		return err
+		return 0, err
 	}
-	return nil
+	return comment.IdComment, nil
 }
 
 func (db *appdbimpl) DeleteComment(commentId int) error {
@@ -29,6 +30,9 @@ func (db *appdbimpl) DeleteComment(commentId int) error {
 	}
 
 	aff, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
 
 	// if there are no affected rows
 	// then the photo was not commented

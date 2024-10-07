@@ -1,7 +1,6 @@
 package database
 
 import (
-
 	"git.sapienzaapps.it/fantasticcoffee/fantastic-coffee-decaffeinated/service/api/components"
 )
 

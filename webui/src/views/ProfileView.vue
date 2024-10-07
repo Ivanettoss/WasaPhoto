@@ -164,14 +164,41 @@
                 }
                 }},
 
-    addComment() {
+   async addComment(photo) {
       if (this.newComment.trim()) {
-        this.comments.push({
-          id: Date.now(),   // ID univoco per ogni commento
-          text: this.newComment,
-        });
+       try{
+        console.log(this.newComment)
+        let idUser=parseInt(this.token)
+        let response=await this.$axios.post("/user/"+photo.username+"/photo/"+photo.idphoto+"/comments",
+        {"text" : this.newComment,"user":{"username" :this.localUser, "id":idUser}},
+        {headers: {
+            "Authorization" : this.token
+       }})
+        photo.ncomments+=1
+        photo.comments.push(response.data)
+       }catch(e){
+        this.errormsg = e.toString();
+       }
         this.newComment = ""; // Resetta il campo dopo l'invio del commento
       }},
+
+    async deleteComment(photo,idcomment){
+      try{
+         let response=await this.$axios.delete( "/user/"+photo.username+"/photo/"+photo.idphoto+"/comments/"+idcomment,{headers: {
+            "Authorization" : this.token
+       }})
+         
+          for (let i = 0; i < photo.comments.length; i++){ 
+                  if(photo.comments[i].idcomment==response.data.idcomment)  
+                    photo.comments.splice(i)
+                    console.log(photo.comments[i].idcomment,response.data.idcomment)
+                }
+          photo.comments=photo.comments
+          photo.ncomments-=1
+      }catch(e){
+        this.errormsg = e.toString();
+      }
+    },
 
         handleButtonClick() {
       if (!this.selectedFile) {
@@ -343,12 +370,13 @@
         <!-- Box dei commenti nascosto sotto la foto -->
       <div v-if="photo.commentsOpen" class="comment-box">
         <ul>
-          <li v-for="comment in comments" :key="comment.id">
-           autore: {{ comment.text }}
+          <li v-for="comment in photo.comments" :key="comment.idcomment">
+           {{ comment.user.username }}: {{ comment.text }}
+           <button class="custom-buttonDelC" @click="deleteComment(photo,comment.idcomment)"> </button>  
           </li>
         </ul>
         <textarea v-model="newComment" placeholder="write a comment..."></textarea>
-        <button  @click="addComment">Comment</button>
+        <button class="custom-buttonC" @click="addComment(photo)">Comment</button>
        </div> 
 	</li>
    
@@ -590,6 +618,18 @@
      transform: scale(1.5)
 }
 
+.custom-buttonDelC {
+  background-image: url("bin.png"); /* URL dell'immagine */
+    background-size: cover; /* L'immagine copre l'intero pulsante */
+    width: 10px; /* Imposta la larghezza */
+    height: 10px; /* Imposta l'altezza */
+    border: none; /* Rimuove il bordo */
+    cursor: pointer; /* Cambia il cursore quando passa sopra il pulsante */
+    margin-left: auto;
+    position:right
+   
+}
+
 
 .buttonsDynamic{
             display: inline-block;
@@ -646,7 +686,7 @@
   border: 1px solid #ddd;
 }
 
-.comment-box button {
+.custom-buttonC {
   margin-top: 5px;
   margin-bottom: 5px;
   padding: 10px;
@@ -657,7 +697,7 @@
   cursor: pointer;
 }
 
-.comment-box button:hover {
+.custom-buttonC:hover {
   background-color: #0056b3;
 }
 

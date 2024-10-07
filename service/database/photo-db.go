@@ -121,6 +121,13 @@ func (db *appdbimpl) GetUserPhotos(idUserPerforming int, username string) ([]com
 			return photoList, err
 		}
 
+		photo.Comments, err = db.GetCommentList(photo.IdPhoto)
+		if err != nil {
+			return photoList, err
+		}
+
+		photo.NComments = len(photo.Comments)
+
 		photoList = append(photoList, photo)
 	}
 

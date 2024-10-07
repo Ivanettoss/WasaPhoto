@@ -20,13 +20,14 @@ type Profile struct {
 }
 
 type Photo struct {
-	Username       string `json:"username"`
-	PhotoBytes     string `json:"photobytes"`
-	IdPhoto        int    `json:"idphoto"`
-	NLikes         int    `json:"nlikes"`
-	NComments      int    `json:"ncomments"`
-	UploadDataTime string `json:"uploaddatatime"`
-	IsLiked        bool   `json:"isliked"`
+	Username       string    `json:"username"`
+	PhotoBytes     string    `json:"photobytes"`
+	IdPhoto        int       `json:"idphoto"`
+	NLikes         int       `json:"nlikes"`
+	NComments      int       `json:"ncomments"`
+	UploadDataTime string    `json:"uploaddatatime"`
+	IsLiked        bool      `json:"isliked"`
+	Comments       []Comment `json:"comments"`
 }
 
 type Comment struct {

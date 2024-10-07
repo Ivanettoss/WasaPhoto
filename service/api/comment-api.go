@@ -15,6 +15,7 @@ import (
 func (rt *_router) commentPhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 
 	// get the comment object from the request body
+
 	var comment components.Comment
 	err := json.NewDecoder(r.Body).Decode(&comment)
 	if err != nil {
@@ -34,6 +35,7 @@ func (rt *_router) commentPhoto(w http.ResponseWriter, r *http.Request, ps httpr
 
 	// check if the ids match
 	if idFromDatabase != comment.User.Id {
+
 		http.Error(w, database.ErrPageNotFound.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -79,7 +81,7 @@ func (rt *_router) commentPhoto(w http.ResponseWriter, r *http.Request, ps httpr
 	comment.UploadDataTime = time.Now().Format("2006-01-02 15:04:05")
 	comment.IdPhoto = photoId
 
-	err = rt.db.InsertComment(comment)
+	comment.IdComment, err = rt.db.InsertComment(comment)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -102,6 +104,12 @@ func (rt *_router) uncommentPhoto(w http.ResponseWriter, r *http.Request, ps htt
 
 	// get the comment object from db
 	commentToDelete, err := rt.db.GetComment(commentId)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	commentToDelete.User, err = rt.db.GetUser(commentToDelete.User.Id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
