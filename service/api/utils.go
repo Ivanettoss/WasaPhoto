@@ -46,7 +46,6 @@ func (rt *_router) UserAuthentication(username string, w http.ResponseWriter, r 
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
-
 		return user, err
 	}
 

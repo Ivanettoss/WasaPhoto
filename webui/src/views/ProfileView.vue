@@ -43,17 +43,16 @@
                 })
                
                 this.username=response.data.username
-                this.photos=[]
-                for (let i = 0; i < response.data.photos.length; i++){
-                    console.log(response.data.photos[i])
-                    response.data.photos[i].commentsOpen=false
-                    this.photos.push(response.data.photos[i])   
-                }
-                //fixa il return a [] e non a null
-                //fixa visibilità follow e defollow e fai funzioni
                 this.nFollowers=response.data.nfollower
                 this.nFollowing=response.data.nfollowed
                 this.nPost=response.data.npost
+                this.photos=[]
+                if (response.data.photos){
+                for (let i = 0; i < response.data.photos.length; i++){
+                    response.data.photos[i].commentsOpen=false
+                    this.photos.push(response.data.photos[i])   
+                }}
+              
                 if (this.username != localStorage.getItem("username"))
                 {
                     this.followState=response.data.followstate
@@ -120,24 +119,40 @@
 			this.$router.push({path: '/'})
 		},
 
-        async mySelf(){
+            mySelf(){
             let myself=false
-            if (this.username == localStorage.getItem('username')){
+            if (this.username == this.localUser){
+              console.log(this.username)
+              console.log(this.localUser)
                this.myself=true
             }
+            console.log(this.myself)
             return this.myself
 
         },
 
         async doFollow(){
-             let response = await this.$axios.put("/user/" +this.localUser +"/followed/"+this.$route.params.username)
+          
+          try{
+             let response = await this.$axios.put("/user/" +this.localUser +"/followed/"+this.$route.params.username,{},
+              { headers: {
+            "Authorization" : this.token
+          }})
+             
              this.followState=True
              this.nFollowers+=1
+          }catch(e){
+            this.errormsg = e.toString();
+          }
         },
         async unFollow(){
+          try{
              let response = await this.$axios.delete("/user/"+this.localUser +"/followed/"+this.$route.params.username)
              this.followState=false
              this.nFollowers-=1
+          }catch(e){
+            this.errormsg = e.toString();
+          }
         },
 
 
@@ -266,6 +281,30 @@
   goToProfile(profileUsername){
     this.$router.push({path: '/profile/'+profileUsername})
     this.buildProfile()
+  },
+
+  async doBan(){
+    try{
+      let response= await this.$axios.put("/user/" +this.localUser +"/ban_user/"+this.$route.params.username,{},
+                    { headers: {
+            "Authorization" : this.token
+          }})
+    this.banState=true
+    }catch(e){
+      this.errormsg = e.toString();
+    }
+  },
+
+   async dounBan(){
+    try{
+      let response= await this.$axios.delete("/user/" +this.localUser +"/ban_user/"+this.$route.params.username,{},
+                    { headers: {
+            "Authorization" : this.token
+          }})
+    this.banState=false
+    }catch(e){
+      this.errormsg = e.toString();
+    }
   }
 
   },
@@ -333,6 +372,9 @@
             <button v-if="mySelf()"  class="buttonsDynamic" @click="handleButtonClick">  {{ selectedFile ? 'Upload' : 'Choose an image' }} </button>
             <button v-else-if="followState" class="buttonsDynamic" @click="unFollow()"> unfollow</button>
             <button v-else-if="!followState" class="buttonsDynamic" @click="doFollow()"> Follow</button>
+            
+            <button v-if="!mySelf() && !banState" class="buttonsDynamicBan" @click="doBan()"> Ban</button>
+             <button v-if="!mySelf() && banState" class="buttonsDynamicBan" @click="dounBan()"> unban</button>
             </div>
             
             
@@ -472,7 +514,10 @@
             font-size: 36px;
             font-weight: bold;
             margin-bottom: 20px;
-            color:cadetblue
+            color:cadetblue;
+            display:flex;
+            justify-content: space-between
+            
         }
         .stats {
             display: flex;
@@ -635,7 +680,7 @@
     border: none; /* Rimuove il bordo */
     cursor: pointer; /* Cambia il cursore quando passa sopra il pulsante */
     margin-left: auto;
-    position:right
+
    
 }
 
@@ -652,6 +697,24 @@
             font-size: 16px;
             transition: background-color 0.3s, transform 0.3s;
         }
+    
+.buttonsDynamicBan{
+            display: inline-block;
+            padding: 15px 30px;
+            background-color: rgb(231, 97, 73);
+            color:white;
+            width:20%;
+            text-align: center;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+            font-size: 12px;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+.buttonsDynamicBan:hover {
+            transform: scale(1.05);
+        };
 
 .buttonsDynamic:hover {
             background-color: #0056b3;
