@@ -29,13 +29,13 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 	}
 
 	bancheck, err := rt.db.BanCheck(profileOwnerId, userPerformingId)
-	if !bancheck {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	if bancheck {
+		http.Error(w, "impossible to retrieve the resource", http.StatusInternalServerError)
 		return
 	}
 
