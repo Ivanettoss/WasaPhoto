@@ -25,6 +25,8 @@
 
                 searchQuery: '',
                 users:[],
+
+                myself:false
                
 
             }
@@ -32,9 +34,7 @@
         },
         methods:{
         async buildProfile(){
-            console.log("token",this.token)
-            console.log("localuser",this.localUser)
-            console.log("params",this.$route.params.username)
+              this.myself=false
             try{
                 let response = await this.$axios.get("/searchuser/" + this.$route.params.username,{
                   headers:{
@@ -120,7 +120,6 @@
 		},
 
             mySelf(){
-            let myself=false
             if (this.username == this.localUser){
               console.log(this.username)
               console.log(this.localUser)
@@ -138,9 +137,11 @@
               { headers: {
             "Authorization" : this.token
           }})
-             
-             this.followState=True
+             console.log("follows pre",this.followState)
+             this.followState=true
              this.nFollowers+=1
+             console.log("follows post",this.followState)
+          
           }catch(e){
             this.errormsg = e.toString();
           }
@@ -148,8 +149,10 @@
         async unFollow(){
           try{
              let response = await this.$axios.delete("/user/"+this.localUser +"/followed/"+this.$route.params.username)
+             console.log("follows pre",this.followState)
              this.followState=false
              this.nFollowers-=1
+             console.log("follows post",this.followState)
           }catch(e){
             this.errormsg = e.toString();
           }
@@ -281,6 +284,8 @@
   goToProfile(profileUsername){
     this.$router.push({path: '/profile/'+profileUsername})
     this.buildProfile()
+    this.mySelf()
+    
   },
 
   async doBan(){
@@ -305,7 +310,12 @@
     }catch(e){
       this.errormsg = e.toString();
     }
-  }
+  },
+
+   goToHome(){
+    this.$router.push({path: '/home'})
+   }
+
 
   },
      mounted(){
@@ -339,8 +349,8 @@
   </div>
 
 
-        <a  id="menubu">Home</a>
-        <a  id="menubu">Profile</a>
+        <a  id="menubu" @click="goToHome()">Home</a>
+        <a  id="menubu" @click="buildProfile()">Profile</a>
         <a  id="menubu" @click="settingsDropdown">Settings</a>
 
         <div class="dropdown">

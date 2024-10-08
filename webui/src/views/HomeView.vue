@@ -1,56 +1,37 @@
-<script>
-export default {
-	data: function() {
-		return {
-			errormsg: null,
-			loading: false,
-			some_data: null,
-		}
-	},
-	methods: {
-		async refresh() {
-			this.loading = true;
-			this.errormsg = null;
-			try {
-				let response = await this.$axios.get("/");
-				this.some_data = response.data;
-			} catch (e) {
-				this.errormsg = e.toString();
-			}
-			this.loading = false;
-		},
-	},
-	mounted() {
-		this.refresh()
-	}
-}
-</script>
-
 <template>
-	<div>
-		<div
-			class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-			<h1 class="h2">Home page</h1>
-			<div class="btn-toolbar mb-2 mb-md-0">
-				<div class="btn-group me-2">
-					<button type="button" class="btn btn-sm btn-outline-secondary" @click="refresh">
-						Refresh
-					</button>
-					<button type="button" class="btn btn-sm btn-outline-secondary" @click="exportList">
-						Export
-					</button>
-				</div>
-				<div class="btn-group me-2">
-					<button type="button" class="btn btn-sm btn-outline-primary" @click="newItem">
-						New
-					</button>
-				</div>
-			</div>
-		</div>
 
-		<ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
-	</div>
-</template>
+<header class="header">
+    <a class="logo">WasaPhoto</a>
+    <nav class="navbar">
+      <div class="search-container">
 
-<style>
-</style>
+        <input id="searchForm" type="text"
+        placeholder="Search users..."
+        v-model="searchQuery" 
+        @keyup.enter="searchUsers(searchQuery)"  
+      />	
+      <button class="search-button" @click="searchUsers(searchQuery)"></button>
+
+      <div v-if="users.length > 0" class="search-dropdown">
+        <ul>
+          <li v-for="user in users" :key="user.username" @click="goToProfile(user.username)">
+            {{ user.username }} 
+          </li>
+        </ul>
+      </div>
+  </div>
+
+
+        <a  id="menubu">Home</a>
+        <a  id="menubu">Profile</a>
+        <a  id="menubu" @click="settingsDropdown">Settings</a>
+
+        <div class="dropdown">
+         <div v-if="showSettings" class="dropdown-content">
+
+        <a  id="menubu" @click="showPopup=true">Change Username</a>
+        <a   id="menubu" @click="doLogOut()">Logout</a>
+      </div>
+      </div>
+    </nav>
+</header>
