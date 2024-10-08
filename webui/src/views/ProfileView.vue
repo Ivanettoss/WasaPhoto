@@ -344,7 +344,10 @@ export default {
 
 <template>
   <header class="header">
+    <div class="logos">
+    <img id="logopic" src="./wasacircle.png">
     <a class="logo">WasaPhoto</a>
+    </div>
     <nav class="navbar">
       <div class="search-container">
         <input
@@ -492,10 +495,22 @@ export default {
 }
 
 .logo {
-  font-size: 22px;
+  font-size: 20px;
   color: whitesmoke;
-  text-decoration: none;
+  text-decoration:none;
   font-weight: 500;
+  
+}
+
+.logos{
+  display: flex; /* Dispone gli elementi al suo interno (l'immagine e la scritta) in una riga */
+  align-items: center;
+}
+
+#logopic{
+  width:50px;
+  height: auto; /* Mantiene le proporzioni dell'immagine */
+  margin-right: 10px; 
 }
 
 .navbar a,

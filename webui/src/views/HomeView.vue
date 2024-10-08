@@ -228,8 +228,12 @@ export default {
 </script>
 
 <template>
+
   <header class="header">
+    <div class="logos">
+    <img id="logopic" src="./wasacircle.png">
     <a class="logo">WasaPhoto</a>
+    </div>
     <nav class="navbar">
       <div class="search-container">
         <input
