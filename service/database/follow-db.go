@@ -6,6 +6,9 @@ func (db *appdbimpl) InsertFollow(idUserPerforming int, idUserToFollow int) erro
 	INSERT OR IGNORE INTO Follow(IdUser,IdUserFollowed) 
 	VALUES(?,?)`, idUserPerforming, idUserToFollow)
 
+	if err != nil {
+		return err
+	}
 	return err
 }
 
@@ -15,6 +18,9 @@ func (db *appdbimpl) DeleteFollow(idUserPerforming int, idUserToUnFollow int) er
 	DELETE 
 	FROM Follow
 	WHERE IdUserFollowed=? and IdUser=?`, idUserToUnFollow, idUserPerforming)
+	if err != nil {
+		return err
+	}
 	return err
 }
 
@@ -81,6 +87,10 @@ func (db *appdbimpl) GetFollowersNumber(idUser int) (int, error) {
 	FROM Follow
 	WHERE  Follow.IdUserFollowed=? `, idUser).Scan(&followersNumber)
 
+	if err != nil {
+		return 0, err
+	}
+
 	return followersNumber, err
 }
 
@@ -91,6 +101,9 @@ func (db *appdbimpl) GetFollowedNumber(idUser int) (int, error) {
 	FROM Follow
 	WHERE Follow.IdUser=? `, idUser).Scan(&followedNumber)
 
+	if err != nil {
+		return 0, err
+	}
 	return followedNumber, err
 }
 
@@ -103,6 +116,10 @@ func (db *appdbimpl) GetFollowState(userPerformingId int, profileOwnerId int) (b
 			WHERE IdUser=?
 			AND IdUserFollowed=?)
 			`, userPerformingId, profileOwnerId).Scan(&followState)
+
+	if err != nil {
+		return false, err
+	}
 
 	return followState, err
 }
