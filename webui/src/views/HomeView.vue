@@ -1,4 +1,5 @@
-<script>
+<script>import axios from "axios";
+
 export default {
   data: function () {
     return {
@@ -26,7 +27,8 @@ export default {
       searchQuery: '',
       users: [],
 
-      myself: false
+      myself: false,
+      photoStream:[]
     };
   },
   methods: {
@@ -63,6 +65,104 @@ export default {
       localStorage.removeItem("username");
       this.$router.push({ path: '/' });
     },
+
+    async buildStream(){
+      try{
+        let response=await this.$axios.get("/user/"+this.localUser+"/stream", 
+        {headers: {
+            Authorization: this.token
+          }
+        }
+        );
+        this.photoStream=[]
+        if (response.data.photos) {
+          for (let i = 0; i < response.data.photos.length; i++) {
+            response.data.photos[i].commentsOpen = false;
+            this.photoStream.push(response.data.photos[i]);
+          }
+        }
+      }catch(e){
+
+      }
+    },
+     async doLike(photo) {
+
+      try {
+
+        let response = await this.$axios.put("/user/" + photo.username + "/photo/" + photo.idphoto + "/like/" + this.localUser, {}, {
+          headers: {
+            "Authorization": this.token
+          }
+        })
+
+      }
+      catch (e) {
+        this.errormsg = e.toString();
+        console.log(e)
+      }
+      photo.isliked = true
+      photo.nlikes += 1
+
+    },
+    async doUnLike(photo) {
+
+      try {
+        let response = await this.$axios.delete("/user/" + photo.username + "/photo/" + photo.idphoto + "/like/" + this.localUser, {
+          headers: {
+            "Authorization": this.token
+          }
+        })
+      }
+      catch (e) {
+        this.errormsg = e.toString();
+      }
+      photo.isliked = false
+      photo.nlikes -= 1
+    },
+    toggleComments(photo) {
+      photo.commentsOpen = !photo.commentsOpen;
+    },
+     async addComment(photo) {
+      if (this.newComment.trim()) {
+        try {
+          console.log(this.newComment)
+          let idUser = parseInt(this.token)
+          let response = await this.$axios.post("/user/" + photo.username + "/photo/" + photo.idphoto + "/comments",
+            { "text": this.newComment, "user": { "username": this.localUser, "id": idUser } },
+            {
+              headers: {
+                "Authorization": this.token
+              }
+            })
+          photo.ncomments += 1
+          photo.comments.push(response.data)
+        } catch (e) {
+          this.errormsg = e.toString();
+        }
+        this.newComment = ""; // Resetta il campo dopo l'invio del commento
+      }
+    },
+
+    async deleteComment(photo, idcomment) {
+      try {
+        let response = await this.$axios.delete("/user/" + photo.username + "/photo/" + photo.idphoto + "/comments/" + idcomment, {
+          headers: {
+            "Authorization": this.token
+          }
+        })
+
+        for (let i = 0; i < photo.comments.length; i++) {
+          if (photo.comments[i].idcomment == response.data.idcomment)
+            photo.comments.splice(i, 1)
+
+        }
+        photo.comments = photo.comments
+        photo.ncomments -= 1
+      } catch (e) {
+        this.errormsg = e.toString();
+      }
+    },
+
 
     // Profile Building and User Actions
     async buildProfile() {
@@ -122,7 +222,7 @@ export default {
     },
   },
   mounted() {
-  
+    this.buildStream()
   }
 };
 </script>
@@ -173,4 +273,46 @@ export default {
       <button @click="showPopup = false">Cancel</button>
     </div>
   </div>
+
+
+
+
+
+
+
+  <ul class="card-list">
+    <li class="card" v-for="photo in this.photoStream" :key="photo.idphoto">
+      <div class="card-image">
+        {{ photo.username }}
+        <img :src="photo.photobytes" />
+      </div>
+      <div class="card-description" target="_blank">
+        {{ photo.nlikes }}
+        <button
+          v-if="!photo.isliked"
+          class="custom-button"
+          @click="doLike(photo)"
+        ></button>
+        <button v-if="photo.isliked" class="custom-buttonLiked" @click="doUnLike(photo)"></button>
+        {{ photo.ncomments }}
+        <button class="custom-button2" @click="toggleComments(photo)"></button>
+      </div>
+
+      <!-- Box dei commenti nascosto sotto la foto -->
+      <div v-if="photo.commentsOpen" class="comment-box">
+        <ul>
+          <li v-for="comment in photo.comments" :key="comment.idcomment">
+            {{ comment.user.username }}: {{ comment.text }}
+            <button
+              v-if="comment.user.id == this.token"
+              class="custom-buttonDelC"
+              @click="deleteComment(photo, comment.idcomment)"
+            ></button>
+          </li>
+        </ul>
+        <textarea v-model="newComment" placeholder="write a comment..."></textarea>
+        <button class="custom-buttonC" @click="addComment(photo)">Comment</button>
+      </div>
+    </li>
+  </ul>
 </template>

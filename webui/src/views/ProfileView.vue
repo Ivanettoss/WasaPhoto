@@ -451,7 +451,7 @@ export default {
         {{ photo.ncomments }}
         <button class="custom-button2" @click="toggleComments(photo)"></button>
 
-        <button class="custom-button3" @click="deletePic(photo.idphoto)"></button>
+        <button v-if="photo.username==localUser" class="custom-button3" @click="deletePic(photo.idphoto)"></button>
       </div>
 
       <!-- Box dei commenti nascosto sotto la foto -->
@@ -741,13 +741,12 @@ p {
 }
 
 .comment-box {
-  margin-top: 10px;
+  margin: 10px auto; /* Imposta il margine automatico per centrare orizzontalmente */
   padding: 10px;
-  background-color: #f1f1f1;
+  background-color: rgba(255, 255, 255, 0.5);
   border: 1px solid #ddd;
   border-radius: 5px;
-  width: 60%;
-  height: 60%;
+  width: 80%; 
 }
 
 .comment-box ul {

@@ -29,6 +29,20 @@ func (db *appdbimpl) GetStream(userPerformingId int, userPerformingName string) 
 		if err != nil {
 			return stream, err
 		}
+		photo.NLikes, err = db.CountLikes(photo.IdPhoto)
+		if err != nil {
+			return stream, err
+		}
+		photo.Comments, err = db.GetCommentList(photo.IdPhoto)
+		if err != nil {
+			return stream, err
+		}
+		photo.NComments = len(photo.Comments)
+
+		photo.IsLiked, err = db.CheckLike(userPerformingId, photo.IdPhoto)
+		if err != nil {
+			return stream, err
+		}
 		photos = append(photos, photo)
 	}
 
