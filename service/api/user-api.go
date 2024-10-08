@@ -29,8 +29,8 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 	}
 
 	bancheck, err := rt.db.BanCheck(profileOwnerId, userPerformingId)
-	if bancheck != false {
-		// gestire il fatto di mostrare 0 dati ma non fare esplodere todo
+	if !bancheck {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
