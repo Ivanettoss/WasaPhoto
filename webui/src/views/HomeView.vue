@@ -195,11 +195,17 @@ export default {
       }
     },
 
-    mySelf() {
+     mySelf() {
       if (this.username == this.localUser) {
-        this.myself = true;
+        console.log(this.username)
+        console.log(this.localUser)
+        this.myself = true
       }
-      return this.myself;
+      else{
+        this.myself = false
+      }
+      return this.myself
+
     },
 
     async changeUsername() {

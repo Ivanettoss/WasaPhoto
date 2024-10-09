@@ -34,7 +34,6 @@ export default {
   },
   methods: {
     async buildProfile() {
-      this.myself = false
       try {
         let response = await this.$axios.get("/searchuser/" + this.$route.params.username, {
           headers: {
@@ -127,7 +126,9 @@ export default {
         console.log(this.localUser)
         this.myself = true
       }
-      console.log(this.myself)
+      else{
+        this.myself = false
+      }
       return this.myself
 
     },
@@ -294,11 +295,9 @@ export default {
     },
 
     goToProfile(profileUsername) {
-      console.log("swag goto")
       this.$router.push({ path: '/profile/' + profileUsername })
+      this.myself=this.mySelf()
       this.buildProfile()
-      this.mySelf()
-
     },
 
     async doBan() {
