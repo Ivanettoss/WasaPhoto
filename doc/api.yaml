@@ -106,47 +106,6 @@ paths:
         "401": { $ref: "#/components/responses/Unauthorized" }
         "500": { $ref: "#/components/responses/InternalServerError" }
 
-  /user/{u_name}/followed_list:
-    parameters:
-      - { $ref: "#/components/parameters/u_name" }
-
-    get:
-      security:
-        - bearerAuth: []
-      tags: ["Follow"]
-      summary: Get the followed users list
-      description: Get all the followed  users list
-      operationId: getFollowedList
-      responses:
-        "200":
-          description: List obtained successfully.
-          content:
-            application/json:
-              schema: { $ref: "#/components/schemas/Ulist" }
-        "400": { $ref: "#/components/responses/BadRequest" }
-        "401": { $ref: "#/components/responses/Unauthorized" }
-        "500": { $ref: "#/components/responses/InternalServerError" }
-
-  /user/{u_name}/followers_list:
-    parameters:
-      - { $ref: "#/components/parameters/u_name" }
-
-    get:
-      security:
-        - bearerAuth: []
-      tags: ["Follow"]
-      summary: Get the followers users list
-      description: Get  the followers  list
-      operationId: getFollowersList
-      responses:
-        "200":
-          description: List obtained successfully.
-          content:
-            application/json:
-              schema: { $ref: "#/components/schemas/Ulist" }
-        "400": { $ref: "#/components/responses/BadRequest" }
-        "401": { $ref: "#/components/responses/Unauthorized" }
-        "500": { $ref: "#/components/responses/InternalServerError" }
 
   /user/{u_name}/ban_user/{user_to_ban}:
     parameters:
@@ -181,23 +140,6 @@ paths:
         "401": { $ref: "#/components/responses/Unauthorized" }
         "500": { $ref: "#/components/responses/InternalServerError" }
 
-  /user/{u_name}/banned_list:
-    parameters:
-      - { $ref: "#/components/parameters/u_name" }
-
-    get:
-      security:
-        - bearerAuth: []
-      tags: ["Ban"]
-      summary: Get the banned users list
-      description: Get  the banned list
-      operationId: getBannedList
-      responses:
-        "200":
-          description: List obtained successfully.
-          content:
-            application/json:
-              schema: { $ref: "#/components/schemas/Ulist" }
 
   /user/{u_name}/photo/{photo_id}/like/{like_name}:
     parameters:
@@ -532,17 +474,6 @@ components:
           minItems: 0
           maxItems: 999
 
-    Ulist:
-      title: ulist
-      description: a list of users
-      type: object
-      properties:
-        users:
-          type: array
-          description: the list of the users
-          items: { $ref: "#/components/schemas/Username" }
-          minItems: 0
-          maxItems: 999
 
     Commentlist:
       title: Commentlist

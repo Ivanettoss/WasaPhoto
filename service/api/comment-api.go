@@ -202,13 +202,13 @@ func (rt *_router) getComments(w http.ResponseWriter, r *http.Request, ps httpro
 	// check if the user is banned
 	banstatus, err := rt.db.BanCheck(photoOwnerId, userPerforming.Id)
 
-	if banstatus != false {
-		// TODO
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+	if banstatus {
+		http.Error(w, "impossible to retrieve the informationo", http.StatusInternalServerError)
 		return
 	}
 

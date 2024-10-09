@@ -14,14 +14,12 @@ func (rt *_router) Handler() http.Handler {
 	rt.router.PUT("/user/:u_name/followed/:name_to_follow", rt.wrap(rt.followUser))
 	rt.router.DELETE("/user/:u_name/followed/:name_to_follow", rt.wrap(rt.unFollowUser))
 
-	// followed and followers list
-	rt.router.GET("/user/:u_name/followed_list", rt.wrap(rt.getFollowedList))
-	rt.router.GET("/user/:u_name/followers_list", rt.wrap(rt.getFollowersList))
+
 
 	// ban and unban
 	rt.router.PUT("/user/:u_name/ban_user/:user_to_ban", rt.wrap(rt.banUser))
 	rt.router.DELETE("/user/:u_name/ban_user/:user_to_ban", rt.wrap(rt.unBanUser))
-	rt.router.GET("/user/:u_name/banned_list", rt.wrap(rt.banList))
+	
 
 	// photo upload and delete
 	rt.router.POST("/user/:u_name/upload", rt.wrap(rt.uploadPhoto))
