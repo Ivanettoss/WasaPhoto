@@ -67,6 +67,7 @@ func (db *appdbimpl) GetCommentList(idPhoto int) ([]components.Comment, error) {
 	if err != nil {
 		return CommentList, err
 	}
+
 	defer CommentRows.Close()
 
 	for CommentRows.Next() {
@@ -76,6 +77,10 @@ func (db *appdbimpl) GetCommentList(idPhoto int) ([]components.Comment, error) {
 			return CommentList, err
 		}
 		CommentList = append(CommentList, comment)
+	}
+
+	if CommentRows.Err() != nil {
+		return CommentList, err
 	}
 
 	// format the list

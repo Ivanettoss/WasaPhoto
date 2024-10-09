@@ -131,5 +131,9 @@ func (db *appdbimpl) GetUserPhotos(idUserPerforming int, username string) ([]com
 		photoList = append(photoList, photo)
 	}
 
+	if photoRows.Err() != nil {
+		return photoList, err
+	}
+
 	return photoList, nil
 }

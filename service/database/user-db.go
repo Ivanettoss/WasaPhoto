@@ -85,6 +85,9 @@ func (db *appdbimpl) SearchUsername(myName string, username string) (components.
 
 		users.UsersList = append(users.UsersList, name)
 	}
+	if userRows.Err() != nil {
+		return users, err
+	}
 
 	// format the list
 	return users, err

@@ -7,7 +7,7 @@ func (db *appdbimpl) InsertBan(idUserPerforming int, idUserToBan int) error {
 	VALUES(?,?)`, idUserPerforming, idUserToBan)
 
 	if err != nil {
-		return  err
+		return err
 	}
 
 	return err
@@ -20,9 +20,9 @@ func (db *appdbimpl) DeleteBan(idUserPerforming int, idUserToUnBan int) error {
 	WHERE IdUserBanned=? and IdUser=?`, idUserToUnBan, idUserPerforming)
 
 	if err != nil {
-		return  err
+		return err
 	}
-	
+
 	return err
 }
 

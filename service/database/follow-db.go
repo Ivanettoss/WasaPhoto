@@ -46,6 +46,9 @@ func (db *appdbimpl) GetFollowersList(idUser int) ([]string, error) {
 		}
 		FollowersList = append(FollowersList, name)
 	}
+	if FollowerRows.Err() != nil {
+		return FollowersList, err
+	}
 
 	// format the list
 	return FollowersList, err
@@ -73,6 +76,10 @@ func (db *appdbimpl) GetFollowedList(idUser int) ([]string, error) {
 			return FollowersList, err
 		}
 		FollowersList = append(FollowersList, name)
+	}
+
+	if FollowerRows.Err() != nil {
+		return FollowersList, err
 	}
 
 	// format the list

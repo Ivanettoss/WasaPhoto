@@ -46,6 +46,10 @@ func (db *appdbimpl) GetStream(userPerformingId int, userPerformingName string) 
 		photos = append(photos, photo)
 	}
 
+	if StreamRows.Err() != nil {
+		return stream, err
+	}
+
 	stream.Photos = photos
 	stream.Username = userPerformingName
 

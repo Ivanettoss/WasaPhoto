@@ -58,7 +58,7 @@ type AppDatabase interface {
 	CountLikes(idPhoto int) (int, error)
 	CheckLike(idUserPerforming int, idPhoto int) (bool, error)
 
-	InsertComment(comment components.Comment) (int,error)
+	InsertComment(comment components.Comment) (int, error)
 	GetComment(commentId int) (components.Comment, error)
 	DeleteComment(commentId int) error
 
