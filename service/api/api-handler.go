@@ -14,12 +14,9 @@ func (rt *_router) Handler() http.Handler {
 	rt.router.PUT("/user/:u_name/followed/:name_to_follow", rt.wrap(rt.followUser))
 	rt.router.DELETE("/user/:u_name/followed/:name_to_follow", rt.wrap(rt.unFollowUser))
 
-
-
 	// ban and unban
 	rt.router.PUT("/user/:u_name/ban_user/:user_to_ban", rt.wrap(rt.banUser))
 	rt.router.DELETE("/user/:u_name/ban_user/:user_to_ban", rt.wrap(rt.unBanUser))
-	
 
 	// photo upload and delete
 	rt.router.POST("/user/:u_name/upload", rt.wrap(rt.uploadPhoto))
