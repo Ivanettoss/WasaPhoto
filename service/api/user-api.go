@@ -111,7 +111,7 @@ func (rt *_router) setMyUserName(w http.ResponseWriter, r *http.Request, ps http
 		http.Error(w, err.Error(), http.StatusUnauthorized)
 		return
 	}
-	
+
 	//  update the username
 	err = rt.db.SetUsername(user.Username, new_username.Username)
 	if err != nil {
