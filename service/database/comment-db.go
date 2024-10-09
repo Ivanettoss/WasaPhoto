@@ -57,7 +57,7 @@ func (db *appdbimpl) GetComment(commentId int) (components.Comment, error) {
 }
 
 func (db *appdbimpl) GetCommentList(idPhoto int) ([]components.Comment, error) {
-	var CommentList []components.Comment
+	CommentList := []components.Comment{}
 
 	CommentRows, err := db.c.Query(`
 	SELECT User.Username,User.IdUser,Comment.IdPhoto,Comment.IdComment,Comment.DataTime,Comment.Text

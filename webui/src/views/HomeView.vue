@@ -326,3 +326,16 @@ export default {
     </li>
   </ul>
 </template>
+<style scoped>
+.card-list{
+    margin-top: 100px; 
+}
+body {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center; /* Allinea il contenuto al centro orizzontalmente */
+  min-height: 100vh; /* Imposta l'altezza minima del body su 100% dello schermo */
+  box-sizing: border-box;
+}
+</style>

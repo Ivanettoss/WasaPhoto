@@ -207,6 +207,7 @@ export default {
               }
             })
           photo.ncomments += 1
+          console.log("comments",photo.comments)
           photo.comments.push(response.data)
         } catch (e) {
           this.errormsg = e.toString();
@@ -494,7 +495,7 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  z-index: 100;
+  z-index: 1000; /* Assicura che la navbar stia sopra tutto il resto */
 }
 
 .logo {
@@ -550,6 +551,7 @@ p {
   position: relative;
   align-self: center;
   margin: auto;
+  margin-top: 80px; 
 }
 .profile-picture {
   overflow: hidden;
