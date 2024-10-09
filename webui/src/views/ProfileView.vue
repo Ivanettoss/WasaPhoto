@@ -54,7 +54,7 @@ export default {
           }
         }
 
-        if (this.username != localStorage.getItem("username")) {
+        if (this.username != localStorage.getItem("username")){
           this.followState = response.data.followstate
           this.banState = response.data.banstate
         }
@@ -596,7 +596,8 @@ p {
   display: block;
   width: 100%;
   width: 100%;
-  height: 300px; /* Imposta un'altezza fissa per la carta */
+  height: 200px; /* Imposta un'altezza fissa per la carta */
+  
   overflow: hidden; /* Nasconde le parti in eccesso dell'immagine */
   position: relative;
 }
@@ -605,17 +606,6 @@ p {
   width: 100%;
   height: 100%;
   object-fit: cover; /* L'immagine si adatta al contenitore mantenendo le proporzioni */
-}
-
-.lNc {
-  display: flex; /* Mantiene i pulsanti su una linea orizzontale */
-  gap: 10px; /* Spazio tra il cuore e il commento */
-  justify-content: flex-start; /* Sposta i pulsanti cuore e commento verso sinistra */
-}
-
-.card-image.is-loaded {
-  filter: none; /* remove the blur on fullres image */
-  transition: filter 1s;
 }
 
 /* Layout Styles */
@@ -632,6 +622,7 @@ p {
   background-color: rgba(255, 255, 255, 0.5);
   display: inline-block;
   width: 90%;
+  
   max-width: 20rem;
   margin: 1rem;
   font-size: 1rem;
@@ -653,6 +644,16 @@ p {
   padding: 15px 20px 5px;
 }
 
+.lNc {
+  display: flex; /* Mantiene i pulsanti su una linea orizzontale */
+  gap: 10px; /* Spazio tra il cuore e il commento */
+  justify-content: flex-start; /* Sposta i pulsanti cuore e commento verso sinistra */
+}
+
+.card-image.is-loaded {
+  filter: none; /* remove the blur on fullres image */
+  transition: filter 1s;
+}
 .custom-button {
   background-image: url("heart.png"); /* URL dell'immagine */
   background-size: cover; /* L'immagine copre l'intero pulsante */
