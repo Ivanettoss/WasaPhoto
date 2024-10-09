@@ -186,7 +186,12 @@ export default {
       await this.$router.push({ path: '/profile/' + this.username });
       this.buildProfile()
     } catch (e) {
+      if (e.response){
+        this.errormsg = e.response.data;
+      }
+      else{
       this.errormsg = e.toString();
+      }
     }
   }
 }

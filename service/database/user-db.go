@@ -1,6 +1,8 @@
 package database
 
 import (
+	"strings"
+
 	"git.sapienzaapps.it/fantasticcoffee/fantastic-coffee-decaffeinated/service/api/components"
 )
 
@@ -54,6 +56,10 @@ func (db *appdbimpl) SetUsername(username string, new_username string) (err erro
 	_, err = db.c.Exec(`UPDATE User SET Username = ? WHERE  Username = ?`, new_username, username)
 
 	if err != nil {
+		if strings.HasPrefix(err.Error(), "UNIQUE constraint failed") {
+			return ErrUsernameNotValid
+		}
+
 		return err
 	}
 

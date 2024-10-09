@@ -33,7 +33,7 @@ export default {
   },
   methods: {
     // Navbar Methods
-    async searchUsers(searchQuery) {
+   async searchUsers(searchQuery) {
       this.users = []; // Resetta la lista se il campo è vuoto
     if (this.searchQuery){
       try {
@@ -208,7 +208,7 @@ export default {
 
     },
 
-    async changeUsername() {
+   async changeUsername() {
   if (this.newUsername) {
     try {
       let response = await this.$axios.put("/user/" + this.localUser + "/set_username", { "username": this.newUsername }, {
@@ -224,7 +224,12 @@ export default {
       await this.$router.push({ path: '/profile/' + this.username });
       this.buildProfile()
     } catch (e) {
+      if (e.response){
+        this.errormsg = e.response.data;
+      }
+      else{
       this.errormsg = e.toString();
+      }
     }
   }
 }
