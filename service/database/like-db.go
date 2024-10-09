@@ -65,6 +65,10 @@ func (db *appdbimpl) CountLikes(idPhoto int) (int, error) {
 		return nlikes, ErrPhotoNotFound
 	}
 
+	if err != nil {
+		return nlikes, err
+	}
+
 	return nlikes, err
 }
 
