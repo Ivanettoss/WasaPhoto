@@ -35,16 +35,16 @@ export default {
     // Navbar Methods
     async searchUsers(searchQuery) {
       this.users = []; // Resetta la lista se il campo è vuoto
-
+    if (this.searchQuery){
       try {
-        let response = await this.$axios.get("/user/" + this.localUser + "/searchusers/" + this.searchQuery);
+        let response = await this.$axios.get("/user/" + this.localUser + "/searchusers/" + this.searchQuery)
         for (let i = 0; i < response.data.userlist.length; i++) {
-          this.users.push(response.data.userlist[i]);
+          this.users.push(response.data.userlist[i])
         }
       } catch (e) {
         this.errormsg = e.toString();
       }
-    },
+    }},
 
     goToProfile(profileUsername) {
       this.$router.push({ path: '/profile/' + profileUsername });
@@ -209,23 +209,25 @@ export default {
     },
 
     async changeUsername() {
-      if (this.newUsername) {
-        try {
-          let response = await this.$axios.put("/user/" + this.localUser + "/set_username", { "username": this.newUsername }, {
-            headers: {
-              "Authorization": this.token
-            }
-          });
-          this.username = response.data.username;
-          this.showPopup = false; // Chiude il popup dopo il salvataggio
-          this.newUsername = ''; // Resetta il campo di input
-          localStorage.setItem('username', this.username);
-          this.$router.push({ path: '/profile/' + this.username });
-        } catch (e) {
-          this.errormsg = e.toString();
+  if (this.newUsername) {
+    try {
+      let response = await this.$axios.put("/user/" + this.localUser + "/set_username", { "username": this.newUsername }, {
+        headers: {
+          "Authorization": this.token
         }
-      }
-    },
+      });
+
+      this.username = response.data.username;
+      this.showPopup = false;
+      localStorage.setItem('username', this.username);
+      this.localUser=this.username
+      await this.$router.push({ path: '/profile/' + this.username });
+      this.buildProfile()
+    } catch (e) {
+      this.errormsg = e.toString();
+    }
+  }
+}
   },
   mounted() {
     this.buildStream()
@@ -291,7 +293,7 @@ export default {
 
 
   <ul class="card-list">
-    <li class="card" v-for="photo in this.photoStream" :key="photo.idphoto">
+    <li class="card" v-for="photo in photoStream" :key="photo.idphoto">
       <div class="card-image">
         {{ photo.username }}
         <img :src="photo.photobytes" />
@@ -314,7 +316,7 @@ export default {
           <li v-for="comment in photo.comments" :key="comment.idcomment">
             {{ comment.user.username }}: {{ comment.text }}
             <button
-              v-if="comment.user.id == this.token"
+              v-if="comment.user.id == token"
               class="custom-buttonDelC"
               @click="deleteComment(photo, comment.idcomment)"
             ></button>

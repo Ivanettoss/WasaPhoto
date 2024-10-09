@@ -104,7 +104,7 @@ export default {
 
     async searchUsers(searchQuery) {
       this.users = []; // Resetta la lista se il campo è vuoto
-
+    if (this.searchQuery){
       try {
         let response = await this.$axios.get("/user/" + this.localUser + "/searchusers/" + this.searchQuery)
         for (let i = 0; i < response.data.userlist.length; i++) {
@@ -113,7 +113,7 @@ export default {
       } catch (e) {
         this.errormsg = e.toString();
       }
-    },
+    }},
 
     async doLogOut() {
       localStorage.removeItem("token")
@@ -412,7 +412,7 @@ export default {
           @change="handleFileSelect"
         />
         <button
-          v-if="this.myself"
+          v-if="myself"
           class="buttonsDynamic"
           @click="handleButtonClick"
         >{{ selectedFile ? 'Upload' : 'Choose an image' }}</button>
@@ -441,7 +441,7 @@ export default {
   </div>
 
   <ul class="card-list">
-    <li class="card" v-for="photo in this.photos" :key="photo.idphoto">
+    <li class="card" v-for="photo in photos" :key="photo.idphoto">
       <div class="card-image">
         <img :src="photo.photobytes" />
       </div>
@@ -465,7 +465,7 @@ export default {
           <li v-for="comment in photo.comments" :key="comment.idcomment">
             {{ comment.user.username }}: {{ comment.text }}
             <button
-              v-if="comment.user.id == this.token"
+              v-if="comment.user.id == token"
               class="custom-buttonDelC"
               @click="deleteComment(photo, comment.idcomment)"
             ></button>
