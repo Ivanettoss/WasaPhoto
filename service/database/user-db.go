@@ -62,12 +62,21 @@ func (db *appdbimpl) SetUsername(username string, new_username string) (err erro
 }
 
 func (db *appdbimpl) SearchUsername(myName string, username string) (components.Ulist, error) {
-	var users components.Ulist
-
+	users := components.Ulist{}
+	users.UsersList = []components.Username{}
+	myId, err := db.GetId(myName)
+	if err != nil {
+		return users, ErrUserNotFound
+	}
 	userRows, err := db.c.Query(`
 		SELECT Username
 		FROM User
-		WHERE User.Username LIKE '%'||?||'%' and User.Username!=?`, username, myName)
+		WHERE User.Username LIKE '%'||?||'%' and User.Username!=?
+		EXCEPT 
+			SELECT User.Username
+			FROM Ban,User
+			WHERE Ban.IdUser=User.IdUser and IdUserBanned=?`, username, myName, myId)
+
 	if err != nil {
 		return users, err
 	}
