@@ -49,6 +49,10 @@ func (db *appdbimpl) GetBannedList(idUserPerforming int) ([]string, error) {
 		BannedList = append(BannedList, name)
 	}
 
+	if BannedRows.Err() != nil {
+		return BannedList, err
+	}
+
 	// format the list
 	return BannedList, err
 

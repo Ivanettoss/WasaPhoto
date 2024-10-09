@@ -34,8 +34,7 @@ func (db *appdbimpl) DeleteComment(commentId int) error {
 		return err
 	}
 
-	// if there are no affected rows
-	// then the photo was not commented
+	// if there are no affected rows then the photo was not commented
 	if aff == 0 {
 		return ErrCommNotFound
 	}
