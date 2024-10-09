@@ -23,6 +23,8 @@ func (db *appdbimpl) GetStream(userPerformingId int, userPerformingName string) 
 		return stream, err
 	}
 
+	defer StreamRows.Close()
+
 	for StreamRows.Next() {
 		var photo components.Photo
 		err = StreamRows.Scan(&photo.Username, &photo.IdPhoto, &photo.UploadDataTime, &photo.PhotoBytes)

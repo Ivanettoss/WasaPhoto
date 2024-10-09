@@ -32,8 +32,10 @@ export default {
     }
 
   },
+
   methods: {
     async buildProfile() {
+      
       try {
         let response = await this.$axios.get("/searchuser/" + this.$route.params.username, {
           headers: {
@@ -56,10 +58,8 @@ export default {
         if (this.username != localStorage.getItem("username")){
           this.followState = response.data.followstate
           this.banState = response.data.banstate
-          console.log("banstate in buildprof",this.banState)
         }
-
-
+     
       }
       catch (e) {
         this.errormsg = e.toString();
@@ -123,8 +123,6 @@ export default {
 
     mySelf() {
       if (this.username == this.localUser) {
-        console.log(this.username)
-        console.log(this.localUser)
         this.myself = true
       }
       else{
@@ -172,27 +170,27 @@ export default {
     settingsDropdown() {
       this.showSettings = !this.showSettings;
     },
-    async changeUsername() {
-      if (this.newUsername) {
-        try {
-          // Aggiungi la logica per cambiare il nome utente, ad esempio:
-          let response = await this.$axios.put("/user/" + this.localUser + "/set_username", { "username": this.newUsername },
-            {
-              headers: {
-                "Authorization": this.token
-              }
-            })
-          console.log(response)
-          this.username = response.data.username
-          this.showPopup = false; // Chiude il popup dopo il salvataggio
-          this.newUsername = ''; // Resetta il campo di input
-          localStorage.setItem('username', user.username);
-          this.$router.push({ path: '/profile/' + this.username })
-        } catch (e) {
-          this.errormsg = e.toString();
+  async changeUsername() {
+  if (this.newUsername) {
+    try {
+      let response = await this.$axios.put("/user/" + this.localUser + "/set_username", { "username": this.newUsername }, {
+        headers: {
+          "Authorization": this.token
         }
-      }
-    },
+      });
+
+      this.username = response.data.username;
+      this.showPopup = false;
+      localStorage.setItem('username', this.username);
+      this.localUser=this.username
+      await this.$router.push({ path: '/profile/' + this.username });
+      this.buildProfile()
+    } catch (e) {
+      this.errormsg = e.toString();
+    }
+  }
+}
+,
 
     async addComment(photo) {
       if (this.newComment.trim()) {
@@ -414,7 +412,7 @@ export default {
           @change="handleFileSelect"
         />
         <button
-          v-if="mySelf()"
+          v-if="this.myself"
           class="buttonsDynamic"
           @click="handleButtonClick"
         >{{ selectedFile ? 'Upload' : 'Choose an image' }}</button>
@@ -478,6 +476,7 @@ export default {
       </div>
     </li>
   </ul>
+   <ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
 </template>
 
 <style>

@@ -325,6 +325,7 @@ export default {
       </div>
     </li>
   </ul>
+   <ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
 </template>
 <style scoped>
 .card-list{
