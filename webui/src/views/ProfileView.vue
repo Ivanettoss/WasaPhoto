@@ -56,6 +56,7 @@ export default {
         if (this.username != localStorage.getItem("username")){
           this.followState = response.data.followstate
           this.banState = response.data.banstate
+          console.log("banstate in buildprof",this.banState)
         }
 
 
@@ -308,7 +309,9 @@ export default {
               "Authorization": this.token
             }
           })
+        
         this.banState = true
+        console.log("ban state  dopo doban",this.banState)
       } catch (e) {
         this.errormsg = e.toString();
       }
@@ -316,13 +319,14 @@ export default {
 
     async dounBan() {
       try {
-        let response = await this.$axios.delete("/user/" + this.localUser + "/ban_user/" + this.$route.params.username, {},
+        let response = await this.$axios.delete("/user/" + this.localUser + "/ban_user/" + this.$route.params.username,
           {
             headers: {
               "Authorization": this.token
             }
           })
         this.banState = false
+        console.log("banstate  dopo dounban",this.banState)
       } catch (e) {
         this.errormsg = e.toString();
       }
