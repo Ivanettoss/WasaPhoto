@@ -26,7 +26,8 @@ export default {
       searchQuery: '',
       users: [],
 
-      myself: false
+      myself: false,
+      bannedUser:false
 
 
     }
@@ -35,7 +36,8 @@ export default {
 
   methods: {
     async buildProfile() {
-      
+      this.errormsg= null,
+      this.bannedUser=false
       try {
         let response = await this.$axios.get("/searchuser/" + this.$route.params.username, {
           headers: {
@@ -59,11 +61,18 @@ export default {
           this.followState = response.data.followstate
           this.banState = response.data.banstate
         }
+       
+      }
      
-      }
       catch (e) {
-        this.errormsg = e.toString();
+      if (e.response){
+        this.errormsg = e.response.data;
+        this.bannedUser=true;
       }
+      else{
+      this.errormsg = e.toString();
+      }
+    }
     },
 
 
@@ -152,7 +161,12 @@ export default {
     },
     async unFollow() {
       try {
-        let response = await this.$axios.delete("/user/" + this.localUser + "/followed/" + this.$route.params.username)
+        let response = await this.$axios.delete("/user/" + this.localUser + "/followed/" + this.$route.params.username,
+         {
+            headers: {
+              "Authorization": this.token
+            }
+          })
         console.log("follows pre", this.followState)
         this.followState = false
         this.nFollowers -= 1
@@ -399,7 +413,7 @@ export default {
     </div>
   </div>
 
-  <div class="profile-container">
+  <div v-if="!bannedUser" class="profile-container">
     <div class="profile-picture">
       <img
         src="https://www.shareicon.net/data/512x512/2016/09/15/829452_user_512x512.png"
